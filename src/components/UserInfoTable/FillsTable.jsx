@@ -19,8 +19,8 @@ export default function FillsTable() {
         <Col span={24}>
           <Row
             style={{
-              fontSize: 14,
-              color: 'rgba(241, 241, 242, 0.5)',
+              fontSize: 12,
+              color: '#000000',
               paddingBottom: 16,
             }}
           >
