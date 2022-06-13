@@ -20,33 +20,60 @@ export default function PublicTrades({ smallScreen }) {
 
   return (
     <FloatingElement
-      style={
-        {
-          ...(smallScreen
-            ? { flex: 1 }
-            : {
+      style={{
+        ...(smallScreen
+          ? { flex: 1 }
+          : {
               // marginTop: '10px',
-              minHeight: '400px',
-              maxHeight: 'calc(100vh - 700px)',
+              height: '500px',
+              width: '100%',
+              padding: '0 16px',
             }),
-        }
-      }
+      }}
     >
       <Title
         style={{
-          color: 'rgba(241, 241, 242, 0.75)',
+          color: '#21252a',
+          fontWeight: 'bold',
           fontSize: 14,
-          borderBottom: '1px solid #1C274F',
-          padding: '12px 0 12px 16px',
+          // borderBottom: '1px solid #1C274F',
+          padding: '12px 0 12px 0',
         }}
-      >Recent Market trades</Title>
+      >
+        시세
+      </Title>
       <SizeTitle>
-        <Col span={8} style={{ textAlign: 'left', paddingRight: 20, color: 'rgba(241, 241, 242, 0.5)', fontSize: 12 }}>Price ({quoteCurrency}) </Col>
-        <Col span={8} style={{ textAlign: 'right', paddingRight: 20, color: 'rgba(241, 241, 242, 0.5)', fontSize: 12 }}>
-          Size ({baseCurrency})
+        <Col
+          span={12}
+          style={{
+            textAlign: 'left',
+            // paddingRight: 10,
+            color: '#636c7d',
+            fontSize: 12,
+          }}
+        >
+          가격 ({quoteCurrency})
         </Col>
-        <Col span={8} style={{ textAlign: 'right', paddingRight: 20, color: 'rgba(241, 241, 242, 0.5)', fontSize: 12 }}>
-          Time
+        {/* <Col
+          span={8}
+          style={{
+            textAlign: 'right',
+            paddingRight: 20,
+            color: '#636c7d',
+            fontSize: 12,
+          }}
+        >
+          수량 ({baseCurrency})
+        </Col> */}
+        <Col
+          span={12}
+          style={{
+            textAlign: 'right',
+            color: '#636c7d',
+            fontSize: 12,
+          }}
+        >
+          체결시간
         </Col>
       </SizeTitle>
       {!!trades && loaded && (
@@ -58,15 +85,15 @@ export default function PublicTrades({ smallScreen }) {
             // maxHeight: smallScreen
             //   ? 'calc(100% - 75px)'
             //   : 'calc(100vh - 800px)',
-            height: 350
+            height: 390,
           }}
         >
           {trades.map((trade: TradeLayout, i: number) => (
             <Row key={i} style={{ marginBottom: 4 }}>
               <Col
-                span={8}
+                span={12}
                 style={{
-                  color: trade.side === 'buy' ? '#41C77A' : '#F23B69',
+                  color: trade.side === 'buy' ? '#26a69a' : '#ef5350',
                   fontSize: 12,
                 }}
               >
@@ -76,14 +103,23 @@ export default function PublicTrades({ smallScreen }) {
                     )
                   : trade.price}
               </Col>
-              <Col span={8} style={{ textAlign: 'right', fontSize: 12, }}>
+              {/* <Col span={8} style={{ textAlign: 'right', fontSize: 12 }}>
                 {market?.minOrderSize && !isNaN(trade.size)
                   ? Number(trade.size).toFixed(
                       getDecimalCount(market.minOrderSize),
                     )
                   : trade.size}
-              </Col>
-              <Col span={8} style={{ textAlign: 'right', color: '#434a59', fontSize: 12, }}>
+              </Col> */}
+              <Col
+                span={12}
+                style={{
+                  textAlign: 'right',
+                  color: '#b1bac3',
+                  fontSize: 12,
+                  letterSpacing: -0.24,
+                  fontWeight: 400,
+                }}
+              >
                 {trade.time && new Date(trade.time).toLocaleTimeString()}
               </Col>
             </Row>
