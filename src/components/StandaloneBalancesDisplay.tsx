@@ -24,7 +24,7 @@ const RowBox = styled(Row)`
 `;
 
 const ActionButton = styled(Button)`
-  color: rgba(241, 241, 242, 0.75);
+  color: '#000000';
   font-size: 12px;
   display: 'inline-block';
   padding-right: 15px;
@@ -43,9 +43,9 @@ export default function StandaloneBalancesDisplay() {
   const baseCurrencyAccount = useSelectedBaseCurrencyAccount();
   const quoteCurrencyAccount = useSelectedQuoteCurrencyAccount();
   const [tokenAccounts] = useTokenAccounts();
-  const baseCurrencyBalances = 
+  const baseCurrencyBalances =
     balances && balances.find((b) => b.coin === baseCurrency);
-  const quoteCurrencyBalances = 
+  const quoteCurrencyBalances =
     balances && balances.find((b) => b.coin === quoteCurrency);
 
   async function onSettleFunds() {
@@ -129,58 +129,52 @@ export default function StandaloneBalancesDisplay() {
     ],
   ];
   return (
-    <FloatingElement style={{ flex: 1, paddingTop: 9 }}>
+    <FloatingElement style={{ flex: 1, padding: 16 }}>
       <div
-       style={{
-         width: '100%',
-         borderBottom: '1px solid #1C274F',
-         fontSize: 14,
-         paddingBottom: 12,
-
-       }}
+        style={{
+          width: '100%',
+          fontSize: 14,
+          fontWeight: 'bold',
+          color: '#21252a',
+          paddingBottom: 12,
+        }}
       >
-        Wallet Balance
+        나의 자산
       </div>
-      <div style={{ paddingRight: 10}}>
-        <Row style={{
-          marginTop: 16,
-          color: 'rgba(241, 241, 242, 0.5)',
-          fontSize: 12,
-          textAlign: 'right',
-        }}>
+      <div style={{ paddingRight: 10 }}>
+        <Row
+          style={{
+            marginTop: 16,
+            color: '#21252a',
+            fontSize: 12,
+            textAlign: 'right',
+          }}
+        >
           <Col span={6} style={{ textAlign: 'left' }}>
             Asset
           </Col>
-          <Col span={9}>
-            Wallet balance
-          </Col>
-          <Col span={9}>
-            Unsettled balance
-          </Col>
+          <Col span={9}>Wallet balance</Col>
+          <Col span={9}>Unsettled balance</Col>
         </Row>
         {formattedBalances.map(
           ([currency, balances, baseOrQuote, mint], index) => (
             <React.Fragment key={index}>
-              <Row style={{
-                marginTop: 16,
-                fontSize: 12,
-                color: 'rgba(241, 241, 242, 1)',
-                textAlign: 'right',
-                borderBottom: '1px solid #1C274F',
-                paddingBottom: 18,
-              }}>
-                <Col span={6} style={{ color: 'rgba(241, 241, 242, 0.5)', textAlign: 'left' }}>
+              <Row
+                style={{
+                  marginTop: 16,
+                  fontSize: 12,
+                  color: '#000000',
+                  textAlign: 'right',
+                  paddingBottom: 18,
+                }}
+              >
+                <Col span={6} style={{ color: '#000000', textAlign: 'left' }}>
                   {currency}
                 </Col>
-                <Col span={9}>
-                  {balances && balances.wallet}
-                </Col>
-                <Col span={9}>
-                  {balances && balances.unsettled}
-                </Col>
-                <Col span={6} style={{ paddingTop: 8}}>
-                </Col>
-                <Col span={9} style={{ paddingTop: 8}}>
+                <Col span={9}>{balances && balances.wallet}</Col>
+                <Col span={9}>{balances && balances.unsettled}</Col>
+                <Col span={6} style={{ paddingTop: 8 }}></Col>
+                <Col span={9} style={{ paddingTop: 8 }}>
                   {/* <ActionButton
                     size="small"
                     onClick={() => setBaseOrQuote(baseOrQuote)}
@@ -188,7 +182,7 @@ export default function StandaloneBalancesDisplay() {
                     Deposit
                   </ActionButton> */}
                 </Col>
-                <Col span={9} style={{ paddingTop: 8}}>
+                <Col span={9} style={{ paddingTop: 8 }}>
                   <ActionButton size="small" onClick={onSettleFunds}>
                     Settle
                   </ActionButton>
@@ -198,9 +192,15 @@ export default function StandaloneBalancesDisplay() {
               {connected && (
                 <RowBox align="middle" style={{ paddingBottom: 10 }}>
                   <StandaloneTokenAccountsSelect
-                    accounts={tokenAccounts?.filter(
-                      (account) => account.effectiveMint.toBase58() === mint,
-                    ).sort((a, b) => a.pubkey.toString() === wallet?.publicKey.toString() ? -1 : 1)}
+                    accounts={tokenAccounts
+                      ?.filter(
+                        (account) => account.effectiveMint.toBase58() === mint,
+                      )
+                      .sort((a, b) =>
+                        a.pubkey.toString() === wallet?.publicKey.toString()
+                          ? -1
+                          : 1,
+                      )}
                     mint={mint}
                     label
                   />
@@ -214,27 +214,29 @@ export default function StandaloneBalancesDisplay() {
         baseOrQuote={baseOrQuote}
         onClose={() => setBaseOrQuote('')}
       />
-      <div style={{ textAlign: 'center', paddingTop: 32, display: window.innerWidth>540 ? 'block':'none' }}>
+      {/* <div
+        style={{
+          textAlign: 'center',
+          paddingTop: 32,
+          display: window.innerWidth > 540 ? 'block' : 'none',
+        }}
+      >
         <img src={logo1} alt="" />
-        <div style={{ paddingTop: 20, fontSize: 16, color: '#F1F1F2' }}>
+        <div style={{ paddingTop: 20, fontSize: 16, color: '#000000' }}>
           First time trading
         </div>
-        <div style={{ fontSize: 16, color: '#F1F1F2' }}>
-          on Raydium?
-        </div>
+        <div style={{ fontSize: 16, color: '#000000' }}>on Raydium?</div>
         <a
           href={'https://raydium.gitbook.io/raydium/'}
           target="_blank"
           rel="noopener noreferrer"
-          style={{ color : 'rgb(173,175,184)',}}
+          style={{ color: '#000000' }}
         >
-        <div style={{ paddingTop: 16, fontSize: 12, color: '#5AC4BE' }}>
-
+          <div style={{ paddingTop: 16, fontSize: 12, color: '#5AC4BE' }}>
             see how it works
-
-        </div>
-      </a>
-      </div>
+          </div>
+        </a>
+      </div> */}
     </FloatingElement>
   );
 }
