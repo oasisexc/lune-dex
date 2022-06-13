@@ -23,14 +23,14 @@ export default function Index({ smallScreen }) {
               textAlign: 'center',
               border: 'transparent',
               borderBottom:
-                activeKeyStr === 'orders' ? '2px solid #5AC4BE' : '',
+                activeKeyStr === 'orders' ? '2px solid #343847' : '',
               background: 'transparent',
               fontSize: 14,
               fontStyle: 'normal',
               fontWeight: 600,
               color:
                 activeKeyStr === 'orders'
-                  ? '#F1F1F2'
+                  ? '#2c2c2c'
                   : 'rgba(241, 241, 242, 0.5)',
               padding: '12px 0 12px',
             }}
@@ -44,7 +44,7 @@ export default function Index({ smallScreen }) {
               width: '50%',
               textAlign: 'center',
               border: 'transparent',
-              borderBottom: activeKeyStr === 'fills' ? '2px solid #5AC4BE' : '',
+              borderBottom: activeKeyStr === 'fills' ? '2px solid #343847' : '',
               background: 'transparent',
               fontSize: 14,
               fontStyle: 'normal',
@@ -66,7 +66,7 @@ export default function Index({ smallScreen }) {
               textAlign: 'center',
               border: 'transparent',
               borderBottom:
-                activeKeyStr === 'balances' ? '2px solid #5AC4BE' : '',
+                activeKeyStr === 'balances' ? '2px solid #343847' : '',
               background: 'transparent',
               fontSize: 14,
               fontStyle: 'normal',
@@ -89,7 +89,7 @@ export default function Index({ smallScreen }) {
                 textAlign: 'center',
                 border: 'transparent',
                 borderBottom:
-                  activeKeyStr === 'fees' ? '2px solid #5AC4BE' : '',
+                  activeKeyStr === 'fees' ? '2px solid #343847' : '',
                 background: 'transparent',
                 fontSize: 14,
                 fontStyle: 'normal',
@@ -107,7 +107,7 @@ export default function Index({ smallScreen }) {
         </Row>
         <div
           style={{
-            border: '1px solid #1C274F',
+            // border: '1px solid #1C274F',
             minHeight: 50,
             borderBottom: '',
             padding: 16,
@@ -127,7 +127,7 @@ export default function Index({ smallScreen }) {
       <FloatingElement style={{ flex: 1, paddingTop: 4 }}>
         <Row>
           <Col
-            span={24 / (market && market.supportsSrmFeeDiscounts ? 4 : 3)}
+            // span={24 / (market && market.supportsSrmFeeDiscounts ? 4 : 3)}
             onClick={() => setActiveKeyStr('orders')}
             style={{
               height: 42,
@@ -135,43 +135,39 @@ export default function Index({ smallScreen }) {
               textAlign: 'center',
               border: 'transparent',
               borderBottom:
-                activeKeyStr === 'orders' ? '2px solid #5AC4BE' : '',
+                activeKeyStr === 'orders' ? '2px solid #343847' : '',
               background: 'transparent',
               fontSize: 14,
               fontStyle: 'normal',
               fontWeight: 600,
-              color:
-                activeKeyStr === 'orders'
-                  ? '#F1F1F2'
-                  : 'rgba(241, 241, 242, 0.5)',
+              color: activeKeyStr === 'orders' ? '#343847' : '#636c7d',
               padding: '12px 0 12px',
+              cursor: 'pointer',
             }}
           >
-            Open Orders
+            미체결
           </Col>
           <Col
-            span={24 / (market && market.supportsSrmFeeDiscounts ? 4 : 3)}
+            // span={24 / (market && market.supportsSrmFeeDiscounts ? 4 : 3)}
             onClick={() => setActiveKeyStr('fills')}
             style={{
               height: 42,
               width: '50%',
               textAlign: 'center',
               border: 'transparent',
-              borderBottom: activeKeyStr === 'fills' ? '2px solid #5AC4BE' : '',
+              borderBottom: activeKeyStr === 'fills' ? '2px solid #343847' : '',
               background: 'transparent',
               fontSize: 14,
               fontStyle: 'normal',
               fontWeight: 600,
-              color:
-                activeKeyStr === 'fills'
-                  ? '#F1F1F2'
-                  : 'rgba(241, 241, 242, 0.5)',
+              color: activeKeyStr === 'fills' ? '#343847' : '#636c7d',
               padding: '12px 0 12px',
+              cursor: 'pointer',
             }}
           >
-            Recent Trade History
+            거래내역
           </Col>
-          <Col
+          {/* <Col
             span={24 / (market && market.supportsSrmFeeDiscounts ? 4 : 3)}
             onClick={() => setActiveKeyStr('balances')}
             style={{
@@ -180,21 +176,19 @@ export default function Index({ smallScreen }) {
               textAlign: 'center',
               border: 'transparent',
               borderBottom:
-                activeKeyStr === 'balances' ? '2px solid #5AC4BE' : '',
+                activeKeyStr === 'balances' ? '2px solid #343847' : '',
               background: 'transparent',
               fontSize: 14,
               fontStyle: 'normal',
               fontWeight: 600,
-              color:
-                activeKeyStr === 'balances'
-                  ? '#F1F1F2'
-                  : 'rgba(241, 241, 242, 0.5)',
+              color: activeKeyStr === 'balances' ? '#343847' : '#636c7d',
               padding: '12px 0 12px',
+              cursor: 'pointer',
             }}
           >
             Balances
-          </Col>
-          {market && market.supportsSrmFeeDiscounts ? (
+          </Col> */}
+          {/* {market && market.supportsSrmFeeDiscounts ? (
             <Col
               span={24 / (market && market.supportsSrmFeeDiscounts ? 4 : 3)}
               onClick={() => setActiveKeyStr('fees')}
@@ -204,25 +198,22 @@ export default function Index({ smallScreen }) {
                 textAlign: 'center',
                 border: 'transparent',
                 borderBottom:
-                  activeKeyStr === 'fees' ? '2px solid #5AC4BE' : '',
+                  activeKeyStr === 'fees' ? '2px solid #343847' : '',
                 background: 'transparent',
                 fontSize: 14,
                 fontStyle: 'normal',
                 fontWeight: 600,
-                color:
-                  activeKeyStr === 'fees'
-                    ? '#F1F1F2'
-                    : 'rgba(241, 241, 242, 0.5)',
+                color: activeKeyStr === 'fees' ? '#343847' : '#636c7d',
                 padding: '12px 0 12px',
+                cursor: 'pointer',
               }}
             >
               Fee Discounts
             </Col>
-          ) : null}
+          ) : null} */}
         </Row>
         <div
           style={{
-            border: '1px solid #1C274F',
             height: 400,
             borderBottom: '',
             padding: 16,
