@@ -10,7 +10,7 @@ const Title = styled.div`
   color: rgba(255, 255, 255, 1);
 `;
 const SizeTitle = styled(Row)`
-  padding: 20px 0 14px;
+  padding: 16px 0 12px;
   color: #434a59;
 `;
 
@@ -47,7 +47,6 @@ export default function PublicTrades({ smallScreen }) {
           span={12}
           style={{
             textAlign: 'left',
-            // paddingRight: 10,
             color: '#636c7d',
             fontSize: 12,
           }}
