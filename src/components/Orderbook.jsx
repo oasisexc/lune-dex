@@ -39,9 +39,15 @@ const Line = styled.div`
 `;
 
 const Price = styled.div`
+  font-weight: bold;
+
+  color: ${(props) => (props.color ? props.color : '#000000')};
+`;
+
+const Size = styled.div`
   position: absolute;
   right: 5px;
-  color: white;
+  color: #000000;
 `;
 
 export default function Orderbook({ smallScreen, depth = 7, onPrice, onSize }) {
@@ -116,36 +122,35 @@ export default function Orderbook({ smallScreen, depth = 7, onPrice, onSize }) {
     >
       <Title
         style={{
-          borderTop: '1px solid #1C274F',
-          borderBottom: '1px solid #1C274F',
           padding: '12px 0 12px 16px',
-          color: 'rgba(241, 241, 242, 0.75)',
+          color: '#21252a',
+          fontWeight: 'bold',
           fontSize: 14,
         }}
       >
-        Order book
+        오더북
       </Title>
       <SizeTitle>
         <Col
           span={12}
           style={{
             textAlign: 'right',
-            color: 'rgba(241, 241, 242, 0.5)',
+            color: '#636c7d',
             fontSize: 12,
           }}
         >
-          Size ({baseCurrency})
+          호가 ({quoteCurrency})
         </Col>
         <Col
           span={12}
           style={{
             textAlign: 'right',
-            paddingRight: 20,
-            color: 'rgba(241, 241, 242, 0.5)',
+            paddingRight: 10,
+            color: '#636c7d',
             fontSize: 12,
           }}
         >
-          Price ({quoteCurrency})
+          수량 ({baseCurrency})
         </Col>
       </SizeTitle>
       <div style={{ paddingBottom: 16 }}>
@@ -158,32 +163,33 @@ export default function Orderbook({ smallScreen, depth = 7, onPrice, onSize }) {
             sizePercent={sizePercent}
             onPriceClick={() => onPrice(price)}
             onSizeClick={() => onSize(size)}
+            color={'#ef5350'}
           />
         ))}
       </div>
       <MarkPriceComponent markPrice={markPrice} />
       <SizeTitle>
-        <Col
+        {/* <Col
           span={12}
           style={{
             textAlign: 'right',
-            color: 'rgba(241, 241, 242, 0.5)',
+            color: '#636c7d',
             fontSize: 12,
           }}
         >
-          Size ({baseCurrency})
+          호가 ({quoteCurrency})
         </Col>
         <Col
           span={12}
           style={{
             textAlign: 'right',
-            paddingRight: 20,
-            color: 'rgba(241, 241, 242, 0.5)',
+            paddingRight: 10,
+            color: '#636c7d',
             fontSize: 12,
           }}
         >
-          Price ({quoteCurrency})
-        </Col>
+          수량 ({baseCurrency})
+        </Col> */}
       </SizeTitle>
       {orderbookData?.bids.map(({ price, size, sizePercent }) => (
         <OrderbookRow
@@ -194,6 +200,7 @@ export default function Orderbook({ smallScreen, depth = 7, onPrice, onSize }) {
           sizePercent={sizePercent}
           onPriceClick={() => onPrice(price)}
           onSizeClick={() => onSize(size)}
+          color={'#26a69a'}
         />
       ))}
     </FloatingElement>
@@ -201,7 +208,7 @@ export default function Orderbook({ smallScreen, depth = 7, onPrice, onSize }) {
 }
 
 const OrderbookRow = React.memo(
-  ({ side, price, size, sizePercent, onSizeClick, onPriceClick }) => {
+  ({ side, price, size, sizePercent, onSizeClick, onPriceClick, color }) => {
     const element = useRef();
 
     const { market } = useMarket();
@@ -236,18 +243,16 @@ const OrderbookRow = React.memo(
         onClick={onSizeClick}
       >
         <Col span={12} style={{ textAlign: 'right' }}>
-          {formattedSize}
+          <Price onClick={onPriceClick} color={color}>
+            {formattedPrice}
+          </Price>
         </Col>
         <Col span={12} style={{ textAlign: 'right' }}>
           <Line
             data-width={sizePercent + '%'}
-            data-bgcolor={
-              side === 'buy'
-                ? 'rgba(65, 199, 122, 0.6)'
-                : 'rgba(242, 60, 105, 0.6)'
-            }
+            data-bgcolor={side === 'buy' ? '#effffe' : '#ffe9e9'}
           />
-          <Price onClick={onPriceClick}>{formattedPrice}</Price>
+          <Size>{formattedSize}</Size>
         </Col>
       </Row>
     );
@@ -263,9 +268,9 @@ const MarkPriceComponent = React.memo(
 
     let markPriceColor =
       markPrice > previousMarkPrice
-        ? '#41C77A'
+        ? '#26a69a'
         : markPrice < previousMarkPrice
-        ? '#F23B69'
+        ? '#ef5350'
         : 'white';
 
     let formattedMarkPrice =
@@ -277,8 +282,6 @@ const MarkPriceComponent = React.memo(
       <MarkPriceTitle
         justify="center"
         style={{
-          borderTop: '1px solid #1C274F',
-          borderBottom: '1px solid #1C274F',
           fontSize: 16,
         }}
       >
