@@ -13,19 +13,21 @@ input[type=number]:focus::-webkit-inner-spin-button {
 }
 /* width */
 ::-webkit-scrollbar {
-  width: 15px;
+  width: 4px;
 }
 /* Track */
 ::-webkit-scrollbar-track {
-  background: #2d313c;
+  background: #ffffff;
 }
 /* Handle */
 ::-webkit-scrollbar-thumb {
-  background: #5b5f67;
+  background: #b1bac3;
+  border-radius: 10px;
 }
 /* Handle on hover */
 ::-webkit-scrollbar-thumb:hover {
-  background: #5b5f67;
+  background: #b1bac3;
+  border-radius: 10px;
 }
 .ant-slider-track, .ant-slider:hover .ant-slider-track {
   background-color: #2abdd2;
