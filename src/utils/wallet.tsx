@@ -134,8 +134,8 @@ export function WalletProvider({ children }) {
               : walletPublicKey;
 
           notify({
-            message: 'Wallet update',
-            description: 'Connected to wallet ' + keyToDisplay,
+            message: '지갑 연결에 성공했습니다',
+            description: keyToDisplay,
           });
         }
       });
@@ -143,8 +143,8 @@ export function WalletProvider({ children }) {
       wallet.on('disconnect', () => {
         setConnected(false);
         notify({
-          message: 'Wallet update',
-          description: 'Disconnected from wallet',
+          message: '지갑 연결을 종료하였습니다',
+          // description: 'Disconnected from wallet',
         });
         localStorage.removeItem('feeDiscountKey');
       });
