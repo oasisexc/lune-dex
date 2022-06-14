@@ -1,4 +1,4 @@
-import { Button, Col, Row } from 'antd';
+import { Button, Col, Divider, Row } from 'antd';
 import React, { useState } from 'react';
 import FloatingElement from './layout/FloatingElement';
 import styled from 'styled-components';
@@ -129,68 +129,68 @@ export default function StandaloneBalancesDisplay() {
     ],
   ];
   return (
-    <FloatingElement style={{ flex: 1, padding: 16 }}>
+    <FloatingElement
+      style={{ flex: 1, padding: 16, color: '#636c7d', fontSize: '14px' }}
+    >
       <div
         style={{
           width: '100%',
           fontSize: 14,
           fontWeight: 'bold',
           color: '#21252a',
-          paddingBottom: 12,
         }}
       >
         나의 자산
       </div>
-      <div style={{ paddingRight: 10 }}>
+      <div>
         <Row
           style={{
-            marginTop: 16,
             color: '#21252a',
-            fontSize: 12,
             textAlign: 'right',
           }}
-        >
-          <Col span={6} style={{ textAlign: 'left' }}>
-            Asset
-          </Col>
-          <Col span={9}>Wallet balance</Col>
-          <Col span={9}>Unsettled balance</Col>
-        </Row>
+        ></Row>
         {formattedBalances.map(
           ([currency, balances, baseOrQuote, mint], index) => (
             <React.Fragment key={index}>
               <Row
                 style={{
-                  marginTop: 16,
-                  fontSize: 12,
-                  color: '#000000',
-                  textAlign: 'right',
-                  paddingBottom: 18,
+                  marginTop: 12,
                 }}
               >
-                <Col span={6} style={{ color: '#000000', textAlign: 'left' }}>
+                <Col
+                  span={5}
+                  style={{
+                    color: '#21252a',
+                    textAlign: 'left',
+                    fontSize: '14px',
+                    fontWeight: 'bold',
+                  }}
+                >
                   {currency}
                 </Col>
-                <Col span={9}>{balances && balances.wallet}</Col>
-                <Col span={9}>{balances && balances.unsettled}</Col>
-                <Col span={6} style={{ paddingTop: 8 }}></Col>
-                <Col span={9} style={{ paddingTop: 8 }}>
-                  {/* <ActionButton
-                    size="small"
-                    onClick={() => setBaseOrQuote(baseOrQuote)}
-                  >
-                    Deposit
-                  </ActionButton> */}
+              </Row>
+              <Row style={{ marginTop: 16 }}>
+                <Col span={5}>{'지갑잔고'}</Col>
+                <Col span={14} style={{ textAlign: 'right' }}>
+                  {balances && balances.wallet}
                 </Col>
-                <Col span={9} style={{ paddingTop: 8 }}>
+                <Col span={5}></Col>
+              </Row>
+              <Row
+                style={{
+                  paddingTop: 16,
+                }}
+              >
+                <Col span={5}>{'거래대기'}</Col>
+                <Col span={14}>{balances && balances.unsettled}</Col>
+                <Col span={5} style={{ textAlign: 'right' }}>
                   <ActionButton size="small" onClick={onSettleFunds}>
                     Settle
                   </ActionButton>
                 </Col>
               </Row>
-
               {connected && (
-                <RowBox align="middle" style={{ paddingBottom: 10 }}>
+                <RowBox align="middle" style={{ paddingTop: '10px' }}>
                   <StandaloneTokenAccountsSelect
                     accounts={tokenAccounts
                       ?.filter(
@@ -206,6 +206,9 @@ export default function StandaloneBalancesDisplay() {
                   />
                 </RowBox>
               )}
+              {index === 0 ? (
+                <Divider style={{ margin: '16px 0 10px' }} />
+              ) : null}
             </React.Fragment>
           ),
         )}
@@ -214,29 +217,6 @@ export default function StandaloneBalancesDisplay() {
         baseOrQuote={baseOrQuote}
         onClose={() => setBaseOrQuote('')}
       />
-      {/* <div
-        style={{
-          textAlign: 'center',
-          paddingTop: 32,
-          display: window.innerWidth > 540 ? 'block' : 'none',
-        }}
-      >
-        <img src={logo1} alt="" />
-        <div style={{ paddingTop: 20, fontSize: 16, color: '#000000' }}>
-          First time trading
-        </div>
-        <div style={{ fontSize: 16, color: '#000000' }}>on Raydium?</div>
-        <a
-          href={'https://raydium.gitbook.io/raydium/'}
-          target="_blank"
-          rel="noopener noreferrer"
-          style={{ color: '#000000' }}
-        >
-          <div style={{ paddingTop: 16, fontSize: 12, color: '#5AC4BE' }}>
-            see how it works
-          </div>
-        </a>
-      </div> */}
     </FloatingElement>
   );
 }
