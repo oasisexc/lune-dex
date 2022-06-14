@@ -17,7 +17,7 @@ import { useSendConnection } from '../utils/connection';
 import { notify } from '../utils/notifications';
 import { Balances } from '../utils/types';
 import StandaloneTokenAccountsSelect from './StandaloneTokenAccountSelect';
-import logo1 from '../assets/logo1.svg';
+// import logo1 from '../assets/logo1.svg';
 
 const RowBox = styled(Row)`
   padding-bottom: 20px;

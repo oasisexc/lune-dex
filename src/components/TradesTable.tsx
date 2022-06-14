@@ -15,7 +15,11 @@ const SizeTitle = styled(Row)`
 `;
 
 export default function PublicTrades({ smallScreen }) {
-  const { baseCurrency, quoteCurrency, market } = useMarket();
+  const {
+    // baseCurrency,
+    quoteCurrency,
+    market,
+  } = useMarket();
   const [trades, loaded] = useRaydiumTrades();
 
   return (
