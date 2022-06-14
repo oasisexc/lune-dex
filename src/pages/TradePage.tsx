@@ -101,8 +101,13 @@ function MarketSelector({
     <Select
       showSearch
       size={'large'}
-      bordered={false}
-      style={{ width: 360, border: 1 }}
+      // bordered={false}
+      style={{
+        width: 230,
+        fontWeight: 'bold',
+        cursor: 'pointer',
+        // marginLeft: '10px',
+      }}
       placeholder={placeholder || 'Select a market'}
       optionFilterProp="name"
       onSelect={onSetMarketAddress}
@@ -122,7 +127,7 @@ function MarketSelector({
               style={{
                 padding: '10px',
                 // @ts-ignore
-                backgroundColor: i % 2 === 0 ? 'rgb(39, 44, 61)' : null,
+                // backgroundColor: i % 2 === 0 ? '#f1f3f5' : null,
               }}
             >
               <Row>
@@ -152,7 +157,7 @@ function MarketSelector({
             style={{
               padding: '10px',
               // @ts-ignore
-              backgroundColor: i % 2 === 0 ? 'rgb(39, 44, 61)' : null,
+              // backgroundColor: i % 2 === 0 ? '#f1f3f5' : null,
             }}
           >
             {name} {deprecated ? ' (Deprecated)' : null}
@@ -295,49 +300,60 @@ const RenderLeftCol = ({
   return (
     <Col>
       <WhiteBox>
-        <Row style={{ height: '142px' }}>
-          <Col>
-            <MarketSelector
-              markets={useMarketsList()}
-              setHandleDeprecated={setHandleDeprecated}
-              placeholder={'Select market'}
-              customMarkets={customMarkets}
-              onDeleteCustomMarket={onDeleteCustomMarket}
-            />
-          </Col>
-          {market ? (
+        <Row style={{ height: '142px', padding: '16px' }}>
+          <Row>
             <Col>
-              <Popover
-                content={<LinkAddress address={market.publicKey.toBase58()} />}
-                placement="bottomRight"
-                title="Market address"
-                trigger="click"
-              >
-                <InfoCircleOutlined style={{ color: '#2abdd2' }} />
-              </Popover>
+              <MarketSelector
+                markets={useMarketsList()}
+                setHandleDeprecated={setHandleDeprecated}
+                placeholder={'Select market'}
+                customMarkets={customMarkets}
+                onDeleteCustomMarket={onDeleteCustomMarket}
+              />
             </Col>
-          ) : null}
-          <Col>
-            <PlusCircleOutlined
-              style={{ color: '#2abdd2' }}
-              onClick={() => setAddMarketVisible(true)}
-            />
-          </Col>
-          {deprecatedMarkets && deprecatedMarkets.length > 0 && (
-            <React.Fragment>
+            {market ? (
               <Col>
-                <Typography>
-                  You have unsettled funds on old markets! Please go through
-                  them to claim your funds.
-                </Typography>
+                <Popover
+                  content={
+                    <LinkAddress address={market.publicKey.toBase58()} />
+                  }
+                  placement="bottomRight"
+                  title="Market address"
+                  trigger="click"
+                >
+                  <InfoCircleOutlined
+                    style={{ color: '#26a69a', margin: '10px 0 0 10px' }}
+                  />
+                </Popover>
               </Col>
-              <Col>
-                <Button onClick={() => setHandleDeprecated(!handleDeprecated)}>
-                  {handleDeprecated ? 'View new markets' : 'Handle old markets'}
-                </Button>
-              </Col>
-            </React.Fragment>
-          )}
+            ) : null}
+            <Col>
+              <PlusCircleOutlined
+                style={{ color: '#26a69a', margin: '10px 0 0 10px' }}
+                onClick={() => setAddMarketVisible(true)}
+              />
+            </Col>
+            {deprecatedMarkets && deprecatedMarkets.length > 0 && (
+              <React.Fragment>
+                <Col>
+                  <Typography>
+                    You have unsettled funds on old markets! Please go through
+                    them to claim your funds.
+                  </Typography>
+                </Col>
+                <Col>
+                  <Button
+                    onClick={() => setHandleDeprecated(!handleDeprecated)}
+                  >
+                    {handleDeprecated
+                      ? 'View new markets'
+                      : 'Handle old markets'}
+                  </Button>
+                </Col>
+              </React.Fragment>
+            )}
+          </Row>
+          <Row></Row>
         </Row>
       </WhiteBox>
       <Row>
