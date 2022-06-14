@@ -118,11 +118,12 @@ export default function Orderbook({ smallScreen, depth = 7, onPrice, onSize }) {
           ? { flex: 1 }
           : { height: '500px', overflow: 'hidden' }),
         height: 500,
+        padding: '14px 16px',
       }}
     >
       <Title
         style={{
-          padding: '12px 0 12px 16px',
+          padding: '0 0 12px 0',
           color: '#21252a',
           fontWeight: 'bold',
           fontSize: 14,
@@ -134,7 +135,7 @@ export default function Orderbook({ smallScreen, depth = 7, onPrice, onSize }) {
         <Col
           span={12}
           style={{
-            textAlign: 'right',
+            textAlign: 'left',
             color: '#636c7d',
             fontSize: 12,
           }}
@@ -145,7 +146,6 @@ export default function Orderbook({ smallScreen, depth = 7, onPrice, onSize }) {
           span={12}
           style={{
             textAlign: 'right',
-            paddingRight: 10,
             color: '#636c7d',
             fontSize: 12,
           }}
@@ -242,7 +242,7 @@ const OrderbookRow = React.memo(
         style={{ marginBottom: 3, fontSize: 12 }}
         onClick={onSizeClick}
       >
-        <Col span={12} style={{ textAlign: 'right' }}>
+        <Col span={12} style={{ textAlign: 'left' }}>
           <Price onClick={onPriceClick} color={color}>
             {formattedPrice}
           </Price>
