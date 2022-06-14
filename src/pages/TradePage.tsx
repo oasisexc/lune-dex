@@ -36,7 +36,7 @@ const Wrapper = styled.div`
   height: 100%;
   display: flex;
   flex-direction: column;
-  padding: 16px 16px;
+  padding: 16px 0;
   .borderNone .ant-select-selector {
     border: none !important;
   }
@@ -273,7 +273,7 @@ function TradePageInner() {
         onClose={() => setAddMarketVisible(false)}
         onAddCustomMarket={onAddCustomMarket}
       />
-      <Wrapper style={{ margin: '0 95px' }}>
+      <Wrapper style={{ margin: '0 85px' }}>
         <Row>
           <Col flex="68%">
             <RenderLeftCol {...leftProps} />
