@@ -42,8 +42,6 @@ const Wrapper = styled.div`
   }
 `;
 
-const;
-
 export default function TradePage() {
   const { marketAddress } = useParams();
   useEffect(() => {
