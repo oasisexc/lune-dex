@@ -1,6 +1,9 @@
 import {
   Col,
   Row,
+  Select,
+  Popover,
+  // Button,
   // Menu
 } from 'antd';
 import React, { useEffect, useState } from 'react';
@@ -14,6 +17,13 @@ import { notify } from '../utils/notifications';
 import { Connection } from '@solana/web3.js';
 import WalletConnect from './WalletConnect';
 import { getTradePageUrl } from '../utils/markets';
+import {
+  InfoCircleOutlined,
+  // PlusCircleOutlined,
+  // SettingOutlined,
+} from '@ant-design/icons';
+// import { useWallet } from '../utils/wallet';
+// import Settings from './Settings';
 
 const Wrapper = styled.div`
   // flex-direction: row;
@@ -32,65 +42,19 @@ const LogoWrapper = styled.div`
   }
 `;
 
-// const MENU = [
-//   {
-//     title: 'Trading',
-//     link: '/',
-//   },
-//   {
-//     title: 'Swap',
-//     link: 'https://raydium.io/swap/',
-//   },
-//   {
-//     title: 'Liquidity',
-//     link: 'https://raydium.io/liquidity/add/',
-//   },
-//   {
-//     title: 'Pools',
-//     link: 'https://raydium.io/pools/',
-//   },
-//   {
-//     title: 'Farms',
-//     link: 'https://raydium.io/farms/',
-//   },
-//   {
-//     title: 'Staking',
-//     link: 'https://raydium.io/staking/',
-//   },
-//   {
-//     title: 'AcceleRaytor',
-//     link: 'https://v1.raydium.io/acceleRaytor/',
-//   },
-//   {
-//     title: 'DropZone',
-//     link: 'https://dropzone.raydium.io/',
-//   },
-//   {
-//     title: 'NFTs',
-//     child: [
-//       {
-//         title: 'Browse NFTs',
-//         link: 'https://nft.raydium.io/marketplace',
-//       },
-//       {
-//         title: 'Explore Collections',
-//         link: 'https://nft.raydium.io/collections',
-//       },
-//     ],
-//   },
-//   {
-//     title: 'Migrate',
-//     link: 'https://raydium.io/migrate/',
-//   },
-// ];
-
 export default function TopBar() {
-  const { endpointInfo, setEndpoint, availableEndpoints, setCustomEndpoints } =
-    useConnectionConfig();
+  const {
+    endpoint,
+    endpointInfo,
+    setEndpoint,
+    availableEndpoints,
+    setCustomEndpoints,
+  } = useConnectionConfig();
   const [addEndpointVisible, setAddEndpointVisible] = useState(false);
   const [testingConnection, setTestingConnection] = useState(false);
   const location = useLocation();
   const history = useHistory();
+  // const { connected, wallet } = useWallet();
 
   const onAddCustomEndpoint = (info: EndpointInfo) => {
     const existingEndpoint = availableEndpoints.some(
@@ -223,6 +187,48 @@ export default function TopBar() {
           <Col flex="auto" style={{ textAlign: 'center' }}>
             {/* {menuDiv} */}
           </Col>
+          <Col>
+            <Popover
+              content={endpoint}
+              placement="bottomRight"
+              title="URL"
+              trigger="hover"
+            >
+              <InfoCircleOutlined
+                style={{ color: '#2abdd2', marginRight: '10px' }}
+              />
+            </Popover>
+          </Col>
+          <Col>
+            <Select
+              onSelect={setEndpoint}
+              value={endpoint}
+              style={{ marginRight: 8, width: '150px' }}
+            >
+              {availableEndpoints.map(({ name, endpoint }) => (
+                <Select.Option value={endpoint} key={endpoint}>
+                  {name}
+                </Select.Option>
+              ))}
+            </Select>
+          </Col>
+          {/* <Col>
+            {connected && (
+              <div>
+                <Popover
+                  content={<Settings autoApprove={wallet?.autoApprove} />}
+                  placement="bottomRight"
+                  title="Settings"
+                  trigger="click"
+                >
+                  <Button style={{ marginRight: 8 }}>
+                    <SettingOutlined />
+                    Settings
+                  </Button>
+                </Popover>
+              </div>
+            )}
+          </Col> */}
           <Col flex="none" style={{ paddingRight: 20 }}>
             <WalletConnect />
           </Col>
