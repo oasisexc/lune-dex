@@ -1,5 +1,5 @@
-import { Button, Col, Divider, Row } from 'antd';
-import React, { useState } from 'react';
+import { Button, Col, Divider, Row, Popover } from 'antd';
+import React, { useEffect, useState } from 'react';
 import FloatingElement from './layout/FloatingElement';
 import styled from 'styled-components';
 import {
@@ -17,11 +17,12 @@ import { useSendConnection } from '../utils/connection';
 import { notify } from '../utils/notifications';
 import { Balances } from '../utils/types';
 import StandaloneTokenAccountsSelect from './StandaloneTokenAccountSelect';
+import { InfoCircleOutlined } from '@ant-design/icons';
 // import logo1 from '../assets/logo1.svg';
 
-const RowBox = styled(Row)`
-  padding-bottom: 20px;
-`;
+// const RowBox = styled(Row)`
+//   padding-bottom: 20px;
+// `;
 
 const ActionButton = styled(Button)`
   color: '#000000';
@@ -158,39 +159,18 @@ export default function StandaloneBalancesDisplay() {
                 }}
               >
                 <Col
-                  span={5}
+                  span={4}
                   style={{
                     color: '#21252a',
                     textAlign: 'left',
-                    fontSize: '14px',
+                    fontSize: '16px',
                     fontWeight: 'bold',
+                    lineHeight: '32px',
                   }}
                 >
                   {currency}
                 </Col>
-              </Row>
-              <Row style={{ marginTop: 16 }}>
-                <Col span={5}>{'지갑잔고'}</Col>
-                <Col span={14} style={{ textAlign: 'right' }}>
-                  {balances && balances.wallet}
-                </Col>
-                <Col span={5}></Col>
-              </Row>
-              <Row
-                style={{
-                  paddingTop: 16,
-                }}
-              >
-                <Col span={5}>{'거래대기'}</Col>
-                <Col span={14}>{balances && balances.unsettled}</Col>
-                <Col span={5} style={{ textAlign: 'right' }}>
-                  <ActionButton size="small" onClick={onSettleFunds}>
-                    Settle
-                  </ActionButton>
-                </Col>
-              </Row>
-              {connected && (
-                <RowBox align="middle" style={{ paddingTop: '10px' }}>
+                {connected && (
                   <StandaloneTokenAccountsSelect
                     accounts={tokenAccounts
                       ?.filter(
@@ -204,8 +184,75 @@ export default function StandaloneBalancesDisplay() {
                     mint={mint}
                     label
                   />
-                </RowBox>
-              )}
+                )}
+              </Row>
+              <Row style={{ marginTop: 20 }}>
+                <Col span={5}>{'지갑잔고'}</Col>
+                <Col span={14} style={{ textAlign: 'right' }}>
+                  {balances && balances.wallet}
+                </Col>
+                <Col span={5}></Col>
+              </Row>
+              <Row
+                style={{
+                  paddingTop: 16,
+                }}
+              >
+                <Col span={6}>
+                  {'정산대기'}{' '}
+                  <Popover
+                    content={
+                      <div style={{ margin: 0, padding: '5px' }}>
+                        <p
+                          style={{
+                            lineHeight: '14px',
+                            padding: '0 0 8px 0 ',
+                            margin: 0,
+                          }}
+                        >
+                          DEX와 상호작용하는 중개지갑에 있는 자산입니다.{' '}
+                        </p>
+                        <p
+                          style={{
+                            lineHeight: '14px',
+                            padding: '0 0 8px 0 ',
+                            margin: 0,
+                          }}
+                        >
+                          주문이 완료되거나 취소되면 정산대기 금액에 표시됩니다.
+                        </p>
+                        <p
+                          style={{ lineHeight: '14px', padding: 0, margin: 0 }}
+                        >
+                          우측 정산버튼을 통해 연결된 본인 소유 지갑으로 자산을
+                          보내야합니다.
+                        </p>
+                      </div>
+                    }
+                    placement="bottomRight"
+                    trigger="hover"
+                  >
+                    <InfoCircleOutlined
+                      style={{ color: '#2abdd2', marginRight: '10px' }}
+                    />
+                  </Popover>
+                </Col>
+
+                <Col span={13}>{balances && balances.unsettled}</Col>
+                <Col span={5} style={{ textAlign: 'right' }}>
+                  <Popover
+                    content={
+                      '정산대기 중인 자산을 연결된 본인 소유 지갑으로 보냅니다.'
+                    }
+                    placement="bottomRight"
+                    trigger="hover"
+                  >
+                    <ActionButton size="small" onClick={onSettleFunds}>
+                      정산
+                    </ActionButton>
+                  </Popover>
+                </Col>
+              </Row>
               {index === 0 ? (
                 <Divider style={{ margin: '16px 0 10px' }} />
               ) : null}

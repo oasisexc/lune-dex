@@ -43,12 +43,12 @@ export default function StandaloneTokenAccountsSelect({
 
   return (
     <React.Fragment>
-      {label && (
+      {/* {label && (
         <Col span={4} style={{ fontSize: 14 }}>
           토큰계좌
         </Col>
-      )}
-      <Col span={14} offset={1}>
+      )} */}
+      <Col span={16} offset={1} style={{ paddingRight: '8px' }}>
         <Select
           style={{ width: '100%' }}
           value={selectedValue}
@@ -68,12 +68,13 @@ export default function StandaloneTokenAccountsSelect({
           ))}
         </Select>
       </Col>
-      <Col span={5} style={{ textAlign: 'right' }}>
+      <Col span={3} style={{ textAlign: 'right' }}>
         <Button
-          // shape="round"
+          shape="round"
           style={{
-            width: '65px',
+            // width: '65px',
             // padding: '0 15px',
+            height: '32px',
             border: '1px solid rgba(241,241,242,0.5)',
           }}
           icon={<CopyOutlined />}
