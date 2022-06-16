@@ -16,7 +16,7 @@ import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { useHistory, useParams } from 'react-router-dom';
 
 import CustomMarketDialog from '../components/CustomMarketDialog';
-// import DeprecatedMarketsInstructions from '../components/DeprecatedMarketsInstructions';
+import DeprecatedMarketsInstructions from '../components/DeprecatedMarketsInstructions';
 import LinkAddress from '../components/LinkAddress';
 import { MarketInfo } from '../utils/types';
 import Orderbook from '../components/Orderbook';
@@ -41,6 +41,8 @@ const Wrapper = styled.div`
     border: none !important;
   }
 `;
+
+const;
 
 export default function TradePage() {
   const { marketAddress } = useParams();
@@ -168,19 +170,19 @@ function MarketSelector({
   );
 }
 
-// const DeprecatedMarketsPage = ({ switchToLiveMarkets }) => {
-//   return (
-//     <>
-//       <Row>
-//         <Col flex="auto">
-//           <DeprecatedMarketsInstructions
-//             switchToLiveMarkets={switchToLiveMarkets}
-//           />
-//         </Col>
-//       </Row>
-//     </>
-//   );
-// };
+const DeprecatedMarketsPage = ({ switchToLiveMarkets }) => {
+  return (
+    <>
+      <Row>
+        <Col flex="auto">
+          <DeprecatedMarketsInstructions
+            switchToLiveMarkets={switchToLiveMarkets}
+          />
+        </Col>
+      </Row>
+    </>
+  );
+};
 
 function TradePageInner() {
   const {
@@ -266,25 +268,33 @@ function TradePageInner() {
     handleDeprecated,
   };
 
-  return (
-    <>
-      <CustomMarketDialog
-        visible={addMarketVisible}
-        onClose={() => setAddMarketVisible(false)}
-        onAddCustomMarket={onAddCustomMarket}
+  if (handleDeprecated) {
+    return (
+      <DeprecatedMarketsPage
+        switchToLiveMarkets={() => setHandleDeprecated(false)}
       />
-      <Wrapper style={{ margin: '0 85px' }}>
-        <Row>
-          <Col flex="68%">
-            <RenderLeftCol {...leftProps} />
-          </Col>
-          <Col flex="32%">
-            <RenderRightCol {...rightProps} />
-          </Col>
-        </Row>
-      </Wrapper>
-    </>
-  );
+    );
+  } else {
+    return (
+      <>
+        <CustomMarketDialog
+          visible={addMarketVisible}
+          onClose={() => setAddMarketVisible(false)}
+          onAddCustomMarket={onAddCustomMarket}
+        />
+        <Wrapper style={{ margin: '0 85px' }}>
+          <Row>
+            <Col flex="68%">
+              <RenderLeftCol {...leftProps} />
+            </Col>
+            <Col flex="32%">
+              <RenderRightCol {...rightProps} />
+            </Col>
+          </Row>
+        </Wrapper>
+      </>
+    );
+  }
 }
 
 const RenderLeftCol = ({
@@ -364,12 +374,12 @@ const RenderLeftCol = ({
         </Col>
       </Row>
       <Row>
-        <Col flex="50%" style={{ height: '100%', minWidth: '280px' }}>
+        <Col flex="40%" style={{ height: '100%', minWidth: '280px' }}>
           <WhiteBox>
             <StandaloneBalancesDisplay />
           </WhiteBox>
         </Col>
-        <Col flex="50%" style={{ height: '100%', minWidth: '280px' }}>
+        <Col flex="60%" style={{ height: '100%', minWidth: '280px' }}>
           <WhiteBox>
             <UserInfoTable smallScreen={false} />
           </WhiteBox>
