@@ -20,27 +20,18 @@ export default function FillsTable() {
           <Row
             style={{
               fontSize: 12,
-              color: '#000000',
+              color: '#636c7d',
               paddingBottom: 16,
+              textAlign: 'center',
             }}
           >
-            <Col span={4} style={{ textAlign: 'left' }}>
-              Market
-            </Col>
-            <Col span={4} style={{ textAlign: 'right' }}>
-              Side
-            </Col>
-            <Col span={4} style={{ textAlign: 'right' }}>
-              Size
-            </Col>
-            <Col span={4} style={{ textAlign: 'right' }}>
-              Price
-            </Col>
-            <Col span={4} style={{ textAlign: 'right' }}>
-              Liquidity
-            </Col>
-            <Col span={4} style={{ textAlign: 'right' }}>
-              {quoteCurrency ? `Fees (${quoteCurrency})` : 'Fees'}
+            <Col span={4}>마켓</Col>
+            <Col span={4}>매수/매도</Col>
+            <Col span={4}>수량</Col>
+            <Col span={4}>가격</Col>
+            <Col span={4}>유동성</Col>
+            <Col span={4}>
+              {quoteCurrency ? `수수료 (${quoteCurrency})` : '수수료'}
             </Col>
           </Row>
           <div style={{ height: 350, overflowX: 'hidden' }}>

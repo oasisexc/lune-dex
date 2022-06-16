@@ -221,10 +221,10 @@ export default function Index({ smallScreen }) {
         >
           {activeKeyStr && activeKeyStr === 'orders' ? <OpenOrdersTab /> : null}
           {activeKeyStr && activeKeyStr === 'fills' ? <FillsTable /> : null}
-          {activeKeyStr && activeKeyStr === 'balances' ? <BalancesTab /> : null}
-          {activeKeyStr && activeKeyStr === 'fees' ? (
+          {/* {activeKeyStr && activeKeyStr === 'balances' ? <BalancesTab /> : null} */}
+          {/* {activeKeyStr && activeKeyStr === 'fees' ? (
             <FeesTable market={{ marketAddress }} />
-          ) : null}
+          ) : null} */}
         </div>
       </FloatingElement>
     );

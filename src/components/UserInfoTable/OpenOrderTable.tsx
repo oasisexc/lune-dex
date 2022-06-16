@@ -74,33 +74,24 @@ export default function OpenOrderTable({
       <Col span={24}>
         <Row
           style={{
-            fontSize: 14,
+            fontSize: 12,
             color: 'rgba(0, 0, 0, 0.5)',
             paddingBottom: 16,
+            textAlign: 'center',
           }}
         >
-          <Col span={5} style={{ textAlign: 'left' }}>
-            Market
-          </Col>
-          <Col span={5} style={{ textAlign: 'right' }}>
-            Side
-          </Col>
-          <Col span={5} style={{ textAlign: 'right' }}>
-            Size
-          </Col>
-          <Col span={5} style={{ textAlign: 'right' }}>
-            Price
-          </Col>
-          <Col span={4} style={{ textAlign: 'right' }}>
-            {' '}
-          </Col>
+          <Col span={5}>마켓</Col>
+          <Col span={5}>매수/매도</Col>
+          <Col span={5}>수량</Col>
+          <Col span={5}>가격</Col>
+          <Col span={4}></Col>
         </Row>
         <div style={{ height: 350, overflowX: 'hidden' }}>
           {dataSource.map(({ marketName, side, size, price, orderId }, i) => (
             <Row
               key={i}
               style={{
-                fontSize: 14,
+                fontSize: 12,
                 color: 'rgba(241, 241, 242, 1)',
                 paddingBottom: 16,
               }}
@@ -128,7 +119,7 @@ export default function OpenOrderTable({
                   onClick={() => cancel(dataSource[i])}
                   loading={cancelId + '' === orderId + ''}
                 >
-                  Cancel
+                  취소
                 </CancelButton>
               </Col>
             </Row>
