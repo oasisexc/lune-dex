@@ -84,8 +84,8 @@ export const TVChartContainer = () => {
         defaultProps.containerId as ChartingLibraryWidgetOptions['container_id'],
       library_path: defaultProps.libraryPath as string,
       auto_save_delay: 5,
-
-      locale: 'en',
+      timezone: 'Asia/Seoul',
+      locale: 'ko',
       disabled_features: ['use_localstorage_for_settings'],
       enabled_features: ['study_templates'],
       load_last_chart: true,

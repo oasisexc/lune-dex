@@ -3,7 +3,7 @@ import { useMemo } from 'react';
 import { USE_MARKETS } from './markets';
 import { sleep } from './utils';
 
-const URL_SERVER = 'https://api.raydium.io/v1/dex/tv/';
+const URL_SERVER = 'https://api.raydium.io/v1/dex/tv/';
 
 export const useTvDataFeed = () => {
   return useMemo(() => makeDataFeed(), []);
@@ -12,36 +12,46 @@ export const useTvDataFeed = () => {
 const makeDataFeed = () => {
   let subscriptions = {};
   const overTime = {};
-  const lastReqTime = {}; 
+  const lastReqTime = {};
 
   const getApi = async (url: string) => {
     try {
-      const response = await fetch(url)
+      const response = await fetch(url);
       if (response.ok) {
-        const responseJson = await response.json()
+        const responseJson = await response.json();
         return responseJson.success
           ? responseJson.data
           : responseJson
           ? responseJson
-          : null
+          : null;
       }
     } catch (err) {
-      console.log(`Error fetching from Chart API ${url}: ${err}`)
+      console.log(`Error fetching from Chart API ${url}: ${err}`);
     }
-    return null
-  }
+    return null;
+  };
 
   return {
     onReady(callback) {
-      setTimeout(() => callback({
-        supported_resolutions: ['5', '15', '60', '120', '240', '1D',
-        //  '2D', '3D', '5D', '1W', '1M', '2M', '3M', '6M', '12M'
-        ],
-        supports_group_request: false,
-        supports_marks: false,
-        supports_search: false,
-        supports_timescale_marks: false,
-      }), 0)
+      setTimeout(
+        () =>
+          callback({
+            supported_resolutions: [
+              '5',
+              '15',
+              '60',
+              '120',
+              '240',
+              '1D',
+              //  '2D', '3D', '5D', '1W', '1M', '2M', '3M', '6M', '12M'
+            ],
+            supports_group_request: false,
+            supports_marks: false,
+            supports_search: false,
+            supports_timescale_marks: false,
+          }),
+        0,
+      );
     },
     async searchSymbol(userInput, exchange, symbolType, onResult) {
       // const result = await apiGet(`${URL_SERVER}search?query=${userInput}&type=${symbolType}&exchange=${exchange}&limit=${1}`);
@@ -53,49 +63,62 @@ const makeDataFeed = () => {
       onResolveErrorCallback,
       extension?,
     ) {
-      let fromCustomMarket = false
-      let customMarket = []
+      let fromCustomMarket = false;
+      let customMarket = [];
       try {
-        const customMarketStr = localStorage.getItem('customMarkets')
-        customMarket =  customMarketStr !== null ?JSON.parse(customMarketStr): []
-      } catch(e) {
-        console.log('error', e)
+        const customMarketStr = localStorage.getItem('customMarkets');
+        customMarket =
+          customMarketStr !== null ? JSON.parse(customMarketStr) : [];
+      } catch (e) {
+        console.log('error', e);
       }
-      let marketInfo = USE_MARKETS.find(item => item.name === symbolName && !item.deprecated)
+      let marketInfo = USE_MARKETS.find(
+        (item) => item.name === symbolName && !item.deprecated,
+      );
 
-      if (!marketInfo){
-        marketInfo = customMarket.find(item => item.name === symbolName || item.userName === symbolName)
-        fromCustomMarket = true
+      if (!marketInfo) {
+        marketInfo = customMarket.find(
+          (item) => item.name === symbolName || item.userName === symbolName,
+        );
+        fromCustomMarket = true;
       }
 
       if (!marketInfo) {
-        return
+        return;
       }
 
-      const result = await getApi(`${URL_SERVER}symbols?market=${marketInfo.address.toString()}`)
+      const result = await getApi(
+        `${URL_SERVER}symbols?market=${marketInfo.address.toString()}`,
+      );
+
       if (!result) {
         onResolveErrorCallback();
         return;
       }
+
       if (result.name !== marketInfo.name) {
         if (result.name.includes('unknown')) {
-          result.name = marketInfo.name
-          result.ticker = marketInfo.name
-          result.description = marketInfo.name
+          result.name = marketInfo.name;
+          result.ticker = marketInfo.name;
+          result.description = marketInfo.name;
         } else {
           if (fromCustomMarket) {
-            for(let index = 0 ; index < customMarket.length; index++ ) {
+            for (let index = 0; index < customMarket.length; index++) {
               if (customMarket[index].name === symbolName) {
-                customMarket[index].userName = customMarket[index].name
-                customMarket[index].name = result.name
+                customMarket[index].userName = customMarket[index].name;
+                customMarket[index].name = result.name;
               }
             }
-            localStorage.setItem('customMarkets', JSON.stringify(customMarket))
+            localStorage.setItem('customMarkets', JSON.stringify(customMarket));
           } else {
-            result.name = marketInfo.name
+            result.name = marketInfo.name;
           }
         }
       }
+
+      result.exchange = 'lunedex';
+      result.listed_exchange = 'lunedex';
+
       onSymboleResolvedCallback(result);
     },
     async getBars(
@@ -110,29 +133,29 @@ const makeDataFeed = () => {
       from = Math.floor(from);
       to = Math.ceil(to);
 
-      window.localStorage.setItem('resolution', resolution)
-      resolution = convertResolutionToApi(resolution)
+      window.localStorage.setItem('resolution', resolution);
+      resolution = convertResolutionToApi(resolution);
 
       if (from < minTs(symbolInfo.out_count, resolution)) {
-        onHistoryCallback([], {nodeData: false})
-        return
+        onHistoryCallback([], { nodeData: false });
+        return;
       }
 
-      const key = `${symbolInfo.market}--${resolution}`
+      const key = `${symbolInfo.market}--${resolution}`;
 
       if (overTime[key] && overTime[key] > from) {
-        onHistoryCallback([], {nodeData: false})
-        return
+        onHistoryCallback([], { nodeData: false });
+        return;
       }
 
       try {
         const result = await getApi(
-          `${URL_SERVER}history?market=${symbolInfo.market}&resolution=${resolution}&from_time=${from}&to_time=${to}`
-        )
+          `${URL_SERVER}history?market=${symbolInfo.market}&resolution=${resolution}&from_time=${from}&to_time=${to}`,
+        );
 
-        if (result.c.length === 0 ) {
-          overTime[key] = to
-        } 
+        if (result.c.length === 0) {
+          overTime[key] = to;
+        }
 
         onHistoryCallback(parseCandles(result), {
           nodeData: result.length === 0,
@@ -171,18 +194,21 @@ const makeDataFeed = () => {
           const to = Math.ceil(new Date().getTime() / 1000);
           const from = reduceTs(to, resolution);
 
-          const resolutionApi = convertResolutionToApi(resolution)
+          const resolutionApi = convertResolutionToApi(resolution);
 
-          if (lastReqTime[subscriberUID] && lastReqTime[subscriberUID] + 1000 * 60 > new Date().getTime()) {
-            continue
+          if (
+            lastReqTime[subscriberUID] &&
+            lastReqTime[subscriberUID] + 1000 * 60 > new Date().getTime()
+          ) {
+            continue;
           }
-          lastReqTime[subscriberUID] = new Date().getTime()
+          lastReqTime[subscriberUID] = new Date().getTime();
 
           const candle = await getApi(
-            `${URL_SERVER}history?market=${symbolInfo.market}&resolution=${resolutionApi}&from_time=${from}&to_time=${to}`
-          )
+            `${URL_SERVER}history?market=${symbolInfo.market}&resolution=${resolutionApi}&from_time=${from}&to_time=${to}`,
+          );
 
-          for (const item of parseCandles(candle)){
+          for (const item of parseCandles(candle)) {
             onRealtimeCallback(item);
           }
           continue;
@@ -197,29 +223,36 @@ const makeDataFeed = () => {
       subscriptions[subscriberUID].stop();
       delete subscriptions[subscriberUID];
     },
-    async searchSymbols(userInput: string, exchange: string, symbolType: string, onResult: SearchSymbolsCallback) {
-      const marketList: any[] = USE_MARKETS.filter(item => item.name.includes(userInput) && !item.deprecated)
-      const reList = []
-      marketList.forEach(item => {
+    async searchSymbols(
+      userInput: string,
+      exchange: string,
+      symbolType: string,
+      onResult: SearchSymbolsCallback,
+    ) {
+      const marketList: any[] = USE_MARKETS.filter(
+        (item) => item.name.includes(userInput) && !item.deprecated,
+      );
+      const reList = [];
+      marketList.forEach((item) => {
         reList.push({
           symbol: item.name,
           full_name: item.name,
           description: item.name,
-          exchange: 'Raydium',
+          exchange: 'lunedex',
           params: [],
           type: 'spot',
-          ticker: item.name
-        })
-      })
+          ticker: item.name,
+        });
+      });
       if (onResult) {
-        onResult(reList)
+        onResult(reList);
       }
-    }
+    },
   };
 };
 
 const minTs = (minCount: number, resolutionTv: string) => {
-  const ts = new Date().getTime() / 1000
+  const ts = new Date().getTime() / 1000;
   switch (resolutionTv) {
     case '1min':
       return ts - 60 * 1 * minCount;
@@ -251,18 +284,18 @@ const minTs = (minCount: number, resolutionTv: string) => {
       return ts - 3600 * 24 * 5 * minCount;
     case '7d':
       return ts - 3600 * 24 * 7 * minCount;
-    case '1m' :
+    case '1m':
       return ts - 3600 * 24 * 31 * 1 * minCount;
-    case '2m' :
+    case '2m':
       return ts - 3600 * 24 * 31 * 2 * minCount;
-    case '3m' :
+    case '3m':
       return ts - 3600 * 24 * 31 * 3 * minCount;
-    case '6m' :
+    case '6m':
       return ts - 3600 * 24 * 31 * 6 * minCount;
-    case '1y' :
+    case '1y':
       return ts - 3600 * 24 * 31 * 12 * minCount;
     default:
-      throw Error(`minTs resolution error: ${resolutionTv}`)
+      throw Error(`minTs resolution error: ${resolutionTv}`);
   }
 };
 
@@ -298,18 +331,18 @@ const reduceTs = (ts: number, resolutionTv: string) => {
       return ts - 3600 * 24 * 5;
     case '7D':
       return ts - 3600 * 24 * 7;
-    case '1M': 
+    case '1M':
       return ts - 3600 * 24 * 31 * 1;
-    case '2M': 
+    case '2M':
       return ts - 3600 * 24 * 31 * 2;
-    case '3M': 
+    case '3M':
       return ts - 3600 * 24 * 31 * 3;
-    case '6M': 
+    case '6M':
       return ts - 3600 * 24 * 31 * 6;
-    case '1Y': 
+    case '1Y':
       return ts - 3600 * 24 * 31 * 12;
     default:
-      throw Error(`reduceTs resolution error: ${resolutionTv}`)
+      throw Error(`reduceTs resolution error: ${resolutionTv}`);
   }
 };
 
@@ -345,18 +378,18 @@ export const convertResolutionToApi = (resolution: string) => {
       return '5d';
     case '7D':
       return '7d';
-    case '1M': 
+    case '1M':
       return '1m';
-    case '2M': 
+    case '2M':
       return '2m';
-    case '3M': 
+    case '3M':
       return '3m';
-    case '6M': 
+    case '6M':
       return '6m';
-    case '1Y': 
+    case '1Y':
       return '1y';
     default:
-      throw Error(`convertResolutionToApi resolution error: ${resolution}`)
+      throw Error(`convertResolutionToApi resolution error: ${resolution}`);
   }
 };
 
