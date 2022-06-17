@@ -124,13 +124,14 @@ export default function CustomMarketDialog({
 
   return (
     <Modal
-      title={'Add custom market'}
+      title={'커스텀 마켓 추가'}
       visible={visible}
       onOk={onSubmit}
+      cancelText={'취소'}
       okText={
         market && knownProgram && knownProgram.deprecated
-          ? 'Refused to add'
-          : 'Add'
+          ? '추가가 거절됨'
+          : '추가'
       }
       onCancel={onDoClose}
       okButtonProps={{

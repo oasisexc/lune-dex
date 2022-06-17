@@ -190,6 +190,7 @@ export function WalletProvider({ children }) {
       <Modal
         title="지갑 선택"
         okText="지갑 연결"
+        cancelText={'취소'}
         visible={isModalVisible}
         okButtonProps={{ style: { display: 'none' } }}
         onCancel={close}
