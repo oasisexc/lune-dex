@@ -1,5 +1,5 @@
 import { Button, Col, Divider, Row, Popover } from 'antd';
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import FloatingElement from './layout/FloatingElement';
 import styled from 'styled-components';
 import {

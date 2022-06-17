@@ -94,6 +94,7 @@ export const TVChartContainer = (props) => {
             'context_menus',
             'control_bar',
             'border_around_the_chart',
+            'use_localstorage_for_settings',
           ]
         : ['use_localstorage_for_settings'],
       enabled_features: ['study_templates'],
@@ -159,6 +160,7 @@ export const TVChartContainer = (props) => {
         .subscribe('onAutoSaveNeeded', () => tvWidget.saveChartToServer());
     });
   }, [
+    props.smallScreen,
     chartProperties,
     datafeed,
     defaultProps.autosize,

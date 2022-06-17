@@ -59,7 +59,7 @@ export default function TradeForm({
   const baseCurrencyAccount = useSelectedBaseCurrencyAccount();
   const quoteCurrencyAccount = useSelectedQuoteCurrencyAccount();
   const openOrdersAccount = useSelectedOpenOrdersAccount(true);
-  const { wallet, connected, connect } = useWallet();
+  const { wallet, connected } = useWallet();
   const sendConnection = useSendConnection();
   const markPrice = useMarkPrice();
   useFeeDiscountKeys();
@@ -360,7 +360,7 @@ export default function TradeForm({
         </Row>
         <div
           style={{
-            padding: '14px 16px 16px',
+            padding: smallScreen ? '14px 16px  14px 0' : '14px 16px 16px',
           }}
         >
           <Radio.Group
@@ -552,7 +552,7 @@ export default function TradeForm({
 
           <BuyButton
             disabled={!price || !baseSize || !connected}
-            onClick={onsubmit}
+            onClick={onSubmit}
             block
             type="primary"
             size="large"

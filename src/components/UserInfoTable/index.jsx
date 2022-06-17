@@ -1,16 +1,13 @@
-import BalancesTable from './BalancesTable';
 import OpenOrderTable from './OpenOrderTable';
 import React, { useState } from 'react';
 import { Button, Col, Row } from 'antd';
 import FillsTable from './FillsTable';
 import FloatingElement from '../layout/FloatingElement';
-import FeesTable from './FeesTable';
-import { useOpenOrders, useBalances, useMarket } from '../../utils/markets';
+
+import { useOpenOrders } from '../../utils/markets';
 import { useWallet } from '../../utils/wallet';
 
 export default function Index({ smallScreen }) {
-  const { market } = useMarket();
-  const marketAddress = market?.address.toString();
   const [activeKeyStr, setActiveKeyStr] = useState('orders');
   const { connected, connect } = useWallet();
 
@@ -161,10 +158,4 @@ const OpenOrdersTab = ({ smallScreen }) => {
   const openOrders = useOpenOrders();
 
   return <OpenOrderTable openOrders={openOrders} smallScreen={smallScreen} />;
-};
-
-const BalancesTab = ({ smallScreen }) => {
-  const balances = useBalances();
-
-  return <BalancesTable balances={balances} smallScreen={smallScreen} />;
 };

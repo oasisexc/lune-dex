@@ -1,8 +1,6 @@
 import {
   Col,
   Row,
-  Select,
-  Popover,
   // Button,
   // Menu
 } from 'antd';
@@ -17,11 +15,7 @@ import { notify } from '../utils/notifications';
 import { Connection } from '@solana/web3.js';
 import WalletConnect from './WalletConnect';
 import { getTradePageUrl } from '../utils/markets';
-import {
-  InfoCircleOutlined,
-  // PlusCircleOutlined,
-  // SettingOutlined,
-} from '@ant-design/icons';
+
 // import { useWallet } from '../utils/wallet';
 // import Settings from './Settings';
 
@@ -43,13 +37,8 @@ const LogoWrapper = styled.div`
 `;
 
 export default function TopBar() {
-  const {
-    endpoint,
-    endpointInfo,
-    setEndpoint,
-    availableEndpoints,
-    setCustomEndpoints,
-  } = useConnectionConfig();
+  const { endpointInfo, setEndpoint, availableEndpoints, setCustomEndpoints } =
+    useConnectionConfig();
   const [addEndpointVisible, setAddEndpointVisible] = useState(false);
   const [testingConnection, setTestingConnection] = useState(false);
   const location = useLocation();
