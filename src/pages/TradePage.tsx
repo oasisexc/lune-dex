@@ -320,7 +320,7 @@ const RenderLeftCol = ({
   return (
     <Col>
       <WhiteBox>
-        <Row style={{ height: '142px', padding: '16px' }}>
+        <Row style={{ padding: '16px' }}>
           <Row>
             <Col>
               <MarketSelector
@@ -339,7 +339,7 @@ const RenderLeftCol = ({
                   }
                   placement="bottomRight"
                   title="Market address"
-                  trigger="click"
+                  trigger="hover"
                 >
                   <InfoCircleOutlined
                     style={{ color: '#26a69a', margin: '10px 0 0 10px' }}

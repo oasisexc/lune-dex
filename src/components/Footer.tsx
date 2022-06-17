@@ -17,12 +17,12 @@ const { useBreakpoint } = Grid;
 // ];
 
 export const CustomFooter = () => {
-  // const smallScreen = !useBreakpoint().lg;
+  const smallScreen = !useBreakpoint().lg;
 
   return (
     <Footer
       style={{
-        padding: window.innerWidth < 1000 ? '20px' : '20px 95px 40px 95px',
+        padding: smallScreen ? '20px' : '20px 95px 40px 95px',
         background: '#f8f9fa',
         color: '#b1bac3',
       }}
