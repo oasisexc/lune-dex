@@ -187,7 +187,7 @@ export default function TopBar() {
           <Col flex="auto" style={{ textAlign: 'center' }}>
             {/* {menuDiv} */}
           </Col>
-          <Col>
+          {/* <Col>
             <Popover
               content={endpoint}
               placement="bottomRight"
@@ -211,7 +211,8 @@ export default function TopBar() {
                 </Select.Option>
               ))}
             </Select>
-          </Col>
+          </Col> */}
+
           {/* <Col>
             {connected && (
               <div>

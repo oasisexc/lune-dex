@@ -35,10 +35,9 @@ export interface ChartContainerProps {
 
 export interface ChartContainerState {}
 
-export const TVChartContainer = () => {
+export const TVChartContainer = (props) => {
   let datafeed = useTvDataFeed();
   let resolution = window.localStorage.getItem('resolution') ?? '60';
-
   try {
     convertResolutionToApi(resolution);
   } catch (e) {
@@ -86,7 +85,17 @@ export const TVChartContainer = () => {
       auto_save_delay: 5,
       timezone: 'Asia/Seoul',
       locale: 'ko',
-      disabled_features: ['use_localstorage_for_settings'],
+      disabled_features: props.smallScreen
+        ? [
+            'left_toolbar',
+            'header_widget',
+            'timeframes_toolbar',
+            'edit_buttons_in_legend',
+            'context_menus',
+            'control_bar',
+            'border_around_the_chart',
+          ]
+        : ['use_localstorage_for_settings'],
       enabled_features: ['study_templates'],
       load_last_chart: true,
       client_id: defaultProps.clientId,
@@ -166,7 +175,7 @@ export const TVChartContainer = () => {
   return (
     <div
       style={{
-        height: window.innerWidth < 1000 ? '50vh' : 540,
+        height: window.innerWidth < 1000 ? '40vh' : 540,
         padding: '10px',
       }}
       id={defaultProps.containerId}

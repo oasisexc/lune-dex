@@ -36,7 +36,7 @@ const Wrapper = styled.div`
   height: 100%;
   display: flex;
   flex-direction: column;
-  padding: 16px 0;
+
   .borderNone .ant-select-selector {
     border: none !important;
   }
@@ -194,11 +194,10 @@ function TradePageInner() {
   const [handleDeprecated, setHandleDeprecated] = useState(false);
   const [addMarketVisible, setAddMarketVisible] = useState(false);
   const deprecatedMarkets = useUnmigratedDeprecatedMarkets();
-  // const [dimensions, setDimensions] = useState({
-  // const [dimensions] = useState({
-  //   height: window.innerHeight,
-  //   width: window.innerWidth,
-  // });
+  const [dimensions, setDimensions] = useState({
+    height: window.innerHeight,
+    width: window.innerWidth,
+  });
 
   useEffect(() => {
     document.title = marketName ? `${marketName} — lunedex` : 'lunedex';
@@ -207,19 +206,19 @@ function TradePageInner() {
   const changeOrderRef =
     useRef<({ size, price }: { size?: number; price?: number }) => void>();
 
-  // useEffect(() => {
-  //   const handleResize = () => {
-  //     setDimensions({
-  //       height: window.innerHeight,
-  //       width: window.innerWidth,
-  //     });
-  //   };
+  useEffect(() => {
+    const handleResize = () => {
+      setDimensions({
+        height: window.innerHeight,
+        width: window.innerWidth,
+      });
+    };
 
-  //   window.addEventListener('resize', handleResize);
-  //   return () => window.removeEventListener('resize', handleResize);
-  // }, []);
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
-  // const width = dimensions?.width;
+  const width = dimensions?.width;
 
   const onAddCustomMarket = (customMarket) => {
     const marketInfo = getMarketInfos(customMarkets).some(
@@ -272,6 +271,19 @@ function TradePageInner() {
         switchToLiveMarkets={() => setHandleDeprecated(false)}
       />
     );
+  } else if (width < 1000) {
+    return (
+      <>
+        <CustomMarketDialog
+          visible={addMarketVisible}
+          onClose={() => setAddMarketVisible(false)}
+          onAddCustomMarket={onAddCustomMarket}
+        />
+        <Wrapper style={{ margin: '0 5px', padding: '5px 0' }}>
+          <RenderMobile {...rightProps} {...leftProps} />
+        </Wrapper>
+      </>
+    );
   } else {
     return (
       <>
@@ -280,12 +292,12 @@ function TradePageInner() {
           onClose={() => setAddMarketVisible(false)}
           onAddCustomMarket={onAddCustomMarket}
         />
-        <Wrapper style={{ margin: '0 85px' }}>
+        <Wrapper style={{ margin: '0 85px', padding: '16px 0' }}>
           <Row>
-            <Col flex="68%">
+            <Col span={16}>
               <RenderLeftCol {...leftProps} />
             </Col>
-            <Col flex="32%">
+            <Col span={8}>
               <RenderRightCol {...rightProps} />
             </Col>
           </Row>
@@ -405,7 +417,121 @@ const RenderRightCol = ({ onPrice, onSize, onChangeOrderRef }) => {
       <Row>
         <Col flex="100%">
           <WhiteBox>
-            <TradeForm setChangeOrderRef={onChangeOrderRef} />
+            <TradeForm
+              setChangeOrderRef={onChangeOrderRef}
+              smallScreen={false}
+            />
+          </WhiteBox>
+        </Col>
+      </Row>
+    </>
+  );
+};
+
+const RenderMobile = ({
+  onPrice,
+  onSize,
+  onChangeOrderRef,
+  setHandleDeprecated,
+  customMarkets,
+  onDeleteCustomMarket,
+  market,
+  setAddMarketVisible,
+  deprecatedMarkets,
+  handleDeprecated,
+}) => {
+  return (
+    <>
+      <WhiteBox style={{ margin: '5px' }}>
+        <Row style={{ padding: '8px' }}>
+          <Col span={20}>
+            <MarketSelector
+              markets={useMarketsList()}
+              setHandleDeprecated={setHandleDeprecated}
+              placeholder={'Select market'}
+              customMarkets={customMarkets}
+              onDeleteCustomMarket={onDeleteCustomMarket}
+            />
+          </Col>
+          {market ? (
+            <Col>
+              <Popover
+                content={<LinkAddress address={market.publicKey.toBase58()} />}
+                placement="bottomRight"
+                title="Market address"
+                trigger="click"
+              >
+                <InfoCircleOutlined
+                  style={{ color: '#26a69a', margin: '10px 0 0 10px' }}
+                />
+              </Popover>
+            </Col>
+          ) : null}
+          <Col>
+            <PlusCircleOutlined
+              style={{ color: '#26a69a', margin: '10px 0 0 10px' }}
+              onClick={() => setAddMarketVisible(true)}
+            />
+          </Col>
+          {deprecatedMarkets && deprecatedMarkets.length > 0 && (
+            <React.Fragment>
+              <Col>
+                <Typography>
+                  You have unsettled funds on old markets! Please go through
+                  them to claim your funds.
+                </Typography>
+              </Col>
+              <Col>
+                <Button onClick={() => setHandleDeprecated(!handleDeprecated)}>
+                  {handleDeprecated ? 'View new markets' : 'Handle old markets'}
+                </Button>
+              </Col>
+            </React.Fragment>
+          )}
+        </Row>
+      </WhiteBox>
+      <Row>
+        <Col flex={'100%'}>
+          <WhiteBox style={{ margin: '5px' }}>
+            <TVChartContainer smallScreen={true} />
+          </WhiteBox>
+        </Col>
+      </Row>
+      <WhiteBox style={{ margin: '5px' }}>
+        <Row>
+          <Col span={12} style={{ height: '400px' }}>
+            <div style={{ display: 'inline' }}>
+              <Orderbook smallScreen={true} onPrice={onPrice} onSize={onSize} />
+            </div>
+          </Col>
+          <Col span={12}>
+            <div style={{ display: 'inline' }}>
+              <TradeForm
+                setChangeOrderRef={onChangeOrderRef}
+                smallScreen={true}
+              />
+            </div>
+          </Col>
+        </Row>
+      </WhiteBox>
+      <Row>
+        <Col flex="100%">
+          <WhiteBox style={{ margin: '5px' }}>
+            <UserInfoTable smallScreen={true} />
+          </WhiteBox>
+        </Col>
+      </Row>
+      <Row>
+        <Col flex="100%">
+          <WhiteBox style={{ margin: '5px' }}>
+            <StandaloneBalancesDisplay />
+          </WhiteBox>
+        </Col>
+      </Row>
+      <Row>
+        <Col flex="100%">
+          <WhiteBox style={{ margin: '5px' }}>
+            <TradesTable smallScreen={true} />
           </WhiteBox>
         </Col>
       </Row>

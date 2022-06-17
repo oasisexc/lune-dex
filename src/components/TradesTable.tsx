@@ -15,24 +15,16 @@ const SizeTitle = styled(Row)`
 `;
 
 export default function PublicTrades({ smallScreen }) {
-  const {
-    // baseCurrency,
-    quoteCurrency,
-    market,
-  } = useMarket();
+  const { baseCurrency, quoteCurrency, market } = useMarket();
   const [trades, loaded] = useRaydiumTrades();
 
   return (
     <FloatingElement
       style={{
-        ...(smallScreen
-          ? { flex: 1 }
-          : {
-              // marginTop: '10px',
-              height: '500px',
-              width: '100%',
-              padding: '0 16px',
-            }),
+        // marginTop: '10px',
+        height: '500px',
+        width: '100%',
+        padding: '0 16px',
       }}
     >
       <Title
@@ -48,7 +40,7 @@ export default function PublicTrades({ smallScreen }) {
       </Title>
       <SizeTitle>
         <Col
-          span={12}
+          span={smallScreen ? 8 : 12}
           style={{
             textAlign: 'left',
             color: '#636c7d',
@@ -57,19 +49,21 @@ export default function PublicTrades({ smallScreen }) {
         >
           가격 ({quoteCurrency})
         </Col>
-        {/* <Col
-          span={8}
-          style={{
-            textAlign: 'right',
-            paddingRight: 20,
-            color: '#636c7d',
-            fontSize: 12,
-          }}
-        >
-          수량 ({baseCurrency})
-        </Col> */}
+        {smallScreen ? (
+          <Col
+            span={8}
+            style={{
+              textAlign: 'right',
+              // paddingRight: 20,
+              color: '#636c7d',
+              fontSize: 12,
+            }}
+          >
+            수량 ({baseCurrency})
+          </Col>
+        ) : null}
         <Col
-          span={12}
+          span={smallScreen ? 8 : 12}
           style={{
             textAlign: 'right',
             color: '#636c7d',
@@ -94,7 +88,7 @@ export default function PublicTrades({ smallScreen }) {
           {trades.map((trade: TradeLayout, i: number) => (
             <Row key={i} style={{ marginBottom: 4 }}>
               <Col
-                span={12}
+                span={smallScreen ? 8 : 12}
                 style={{
                   color: trade.side === 'buy' ? '#26a69a' : '#ef5350',
                   fontSize: 12,
@@ -106,15 +100,17 @@ export default function PublicTrades({ smallScreen }) {
                     )
                   : trade.price}
               </Col>
-              {/* <Col span={8} style={{ textAlign: 'right', fontSize: 12 }}>
-                {market?.minOrderSize && !isNaN(trade.size)
-                  ? Number(trade.size).toFixed(
-                      getDecimalCount(market.minOrderSize),
-                    )
-                  : trade.size}
-              </Col> */}
+              {smallScreen ? (
+                <Col span={8} style={{ textAlign: 'right', fontSize: 12 }}>
+                  {market?.minOrderSize && !isNaN(trade.size)
+                    ? Number(trade.size).toFixed(
+                        getDecimalCount(market.minOrderSize),
+                      )
+                    : trade.size}
+                </Col>
+              ) : null}
               <Col
-                span={12}
+                span={smallScreen ? 8 : 12}
                 style={{
                   textAlign: 'right',
                   color: '#b1bac3',

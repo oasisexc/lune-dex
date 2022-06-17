@@ -44,8 +44,10 @@ const sliderMarks = {
 export default function TradeForm({
   style,
   setChangeOrderRef,
+  smallScreen,
 }: {
   style?: any;
+  smallScreen: boolean;
   setChangeOrderRef?: (
     ref: ({ size, price }: { size?: number; price?: number }) => void,
   ) => void;
@@ -361,36 +363,26 @@ export default function TradeForm({
             padding: '14px 16px 16px',
           }}
         >
-          {/* <Select
-            defaultValue="Limit Order"
-            bordered={false}
-            style={{
-              width: '100%',
-              height: 47,
-              left: 0,
-              top: 0,
-              background: '#ffffff',
-              borderRadius: 4,
-              paddingTop: 5,
-              fontSize: 14,
-            }}
+          <Radio.Group
+            onChange={selectOrderType}
+            value={orderType}
+            style={{ display: 'flex' }}
           >
-            <Select.Option value="Limit Order">지정가</Select.Option>
-            <Select.Option value="Market Order">Market Order</Select.Option>
-          </Select> */}
-          <Radio.Group onChange={selectOrderType} value={orderType}>
-            <Radio value={'limit'} style={{ fontSize: '13px' }}>
+            <Radio
+              value={'limit'}
+              style={{ fontSize: smallScreen ? '12px' : '13px' }}
+            >
               지정가
             </Radio>
             <Radio
               value={'market'}
               disabled={true}
-              style={{ fontSize: '13px' }}
+              style={{ fontSize: smallScreen ? '12px' : '13px' }}
             >
               시장가
             </Radio>
           </Radio.Group>
-          <div style={{ marginTop: 14 }}>
+          <div style={{ marginTop: smallScreen ? 4 : 14 }}>
             <div
               style={{
                 textAlign: 'left',
@@ -407,7 +399,7 @@ export default function TradeForm({
               bordered={false}
               style={{
                 textAlign: 'right',
-                height: 48,
+                height: smallScreen ? 35 : 48,
                 background: '#ffffff',
                 border: '1px solid #f1f3f5',
                 borderRadius: 4,
@@ -423,7 +415,7 @@ export default function TradeForm({
             />
           </div>
 
-          <div style={{ marginTop: 14 }}>
+          <div style={{ marginTop: smallScreen ? 4 : 14 }}>
             <div
               style={{
                 textAlign: 'left',
@@ -441,7 +433,7 @@ export default function TradeForm({
               style={{
                 textAlign: 'right',
                 paddingBottom: 8,
-                height: 47,
+                height: smallScreen ? 35 : 48,
                 background: '#ffffff',
                 border: '1px solid #f1f3f5',
                 borderRadius: 4,
@@ -456,20 +448,20 @@ export default function TradeForm({
               onChange={(e) => onSetBaseSize(parseFloat(e.target.value))}
             />
           </div>
-
-          <Slider
-            style={{
-              width: '90%',
-              margin: '14px auto',
-              // padding: '14px 0 0 0',
-              height: '34px',
-            }}
-            value={sizeFraction}
-            tipFormatter={(value) => `${value}%`}
-            marks={sliderMarks}
-            onChange={onSliderChange}
-          />
-          <div style={{ marginTop: 14 }}>
+          <SliderWrapper smallScreen={smallScreen}>
+            <Slider
+              style={{
+                width: '90%',
+                margin: smallScreen ? '6px auto 0' : '14px auto',
+                height: '34px',
+              }}
+              value={sizeFraction}
+              tipFormatter={(value) => `${value}%`}
+              marks={sliderMarks}
+              onChange={onSliderChange}
+            />
+          </SliderWrapper>
+          <div style={{ marginTop: smallScreen ? 0 : 14 }}>
             <div
               style={{
                 textAlign: 'left',
@@ -487,7 +479,7 @@ export default function TradeForm({
               style={{
                 textAlign: 'right',
                 paddingBottom: 8,
-                height: 47,
+                height: smallScreen ? 35 : 48,
                 background: '#ffffff',
                 border: '1px solid #f1f3f5',
                 borderRadius: 4,
@@ -505,19 +497,20 @@ export default function TradeForm({
 
           <Row
             style={{
-              paddingTop: 8,
+              paddingTop: smallScreen ? 0 : 8,
               display: 'flex',
               justifyContent: 'flex-end',
             }}
           >
             <Col
               style={{
-                paddingTop: 10,
-                paddingLeft: 10,
+                paddingTop: smallScreen ? 4 : 10,
+                paddingLeft: smallScreen ? 0 : 10,
               }}
             >
               <Switch
                 checked={postOnly}
+                size={smallScreen ? 'small' : 'default'}
                 style={{ width: 32 }}
                 onChange={postOnChange}
               />
@@ -534,12 +527,13 @@ export default function TradeForm({
             </Col>
             <Col
               style={{
-                paddingTop: 10,
-                paddingLeft: 10,
+                paddingTop: smallScreen ? 4 : 10,
+                paddingLeft: smallScreen ? 4 : 10,
               }}
             >
               <Switch
                 checked={ioc}
+                size={smallScreen ? 'small' : 'default'}
                 style={{ width: 32 }}
                 onChange={iocOnChange}
               />
@@ -564,8 +558,8 @@ export default function TradeForm({
             size="large"
             loading={submitting}
             style={{
-              marginTop: 20,
-              height: 48,
+              marginTop: smallScreen ? 10 : 20,
+              height: smallScreen ? 40 : 48,
               background: side === 'buy' ? '#26a69a' : '#ef5350',
               // border: '1px solid #5AC4BE',
               color: '#ffffff',
@@ -583,3 +577,9 @@ export default function TradeForm({
     </FloatingElement>
   );
 }
+
+const SliderWrapper = styled.div`
+  .ant-slider-mark-text {
+    font-size: ${(props) => (props.smallScreen ? '10px' : '14px')};
+  }
+`;

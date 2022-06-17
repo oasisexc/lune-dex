@@ -1,8 +1,8 @@
 import React from 'react';
 import styled from 'styled-components';
 
-export default function WhiteBox({ children }) {
-  return <Container>{children}</Container>;
+export default function WhiteBox(props) {
+  return <Container style={{ ...props.style }}>{props.children}</Container>;
 }
 
 const Container = styled.div`

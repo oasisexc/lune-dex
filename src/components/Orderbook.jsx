@@ -13,12 +13,12 @@ const Title = styled.div`
 `;
 
 const SizeTitle = styled(Row)`
-  padding: 16px 0 12px;
+  padding: ${(props) => (props.smallScreen ? '0 0 4px 0' : '16px 0 12px')};
   color: #434a59;
 `;
 
 const MarkPriceTitle = styled(Row)`
-  padding: 15px 0 12px;
+  padding: ${(props) => (props.smallScreen ? '0' : '15px 0 12px')};
   font-weight: 700;
 `;
 
@@ -116,22 +116,24 @@ export default function Orderbook({ smallScreen, depth = 7, onPrice, onSize }) {
       style={{
         ...(smallScreen
           ? { flex: 1 }
-          : { height: '500px', overflow: 'hidden' }),
-        height: 500,
+          : { height: smallScreen ? '300xp' : '500px', overflow: 'hidden' }),
+        height: smallScreen ? '300xp' : '500px',
         padding: '14px 16px',
       }}
     >
-      <Title
-        style={{
-          padding: '0 0 12px 0',
-          color: '#21252a',
-          fontWeight: 'bold',
-          fontSize: 14,
-        }}
-      >
-        오더북
-      </Title>
-      <SizeTitle>
+      {smallScreen ? null : (
+        <Title
+          style={{
+            padding: '0 0 12px 0',
+            color: '#21252a',
+            fontWeight: 'bold',
+            fontSize: 14,
+          }}
+        >
+          오더북
+        </Title>
+      )}
+      <SizeTitle smallScreen={smallScreen}>
         <Col
           span={12}
           style={{
@@ -140,7 +142,7 @@ export default function Orderbook({ smallScreen, depth = 7, onPrice, onSize }) {
             fontSize: 12,
           }}
         >
-          호가 ({quoteCurrency})
+          호가 {smallScreen ? null : quoteCurrency}
         </Col>
         <Col
           span={12}
@@ -150,10 +152,10 @@ export default function Orderbook({ smallScreen, depth = 7, onPrice, onSize }) {
             fontSize: 12,
           }}
         >
-          수량 ({baseCurrency})
+          누적수량 {smallScreen ? null : baseCurrency}
         </Col>
       </SizeTitle>
-      <div style={{ paddingBottom: 16 }}>
+      <div style={{ paddingBottom: smallScreen ? 0 : 16 }}>
         {orderbookData?.asks.map(({ price, size, sizePercent }) => (
           <OrderbookRow
             key={price + ''}
@@ -167,30 +169,8 @@ export default function Orderbook({ smallScreen, depth = 7, onPrice, onSize }) {
           />
         ))}
       </div>
-      <MarkPriceComponent markPrice={markPrice} />
-      <SizeTitle>
-        {/* <Col
-          span={12}
-          style={{
-            textAlign: 'right',
-            color: '#636c7d',
-            fontSize: 12,
-          }}
-        >
-          호가 ({quoteCurrency})
-        </Col>
-        <Col
-          span={12}
-          style={{
-            textAlign: 'right',
-            paddingRight: 10,
-            color: '#636c7d',
-            fontSize: 12,
-          }}
-        >
-          수량 ({baseCurrency})
-        </Col> */}
-      </SizeTitle>
+      <MarkPriceComponent markPrice={markPrice} smallScreen={smallScreen} />
+      {smallScreen ? null : <SizeTitle />}
       {orderbookData?.bids.map(({ price, size, sizePercent }) => (
         <OrderbookRow
           key={price + ''}
@@ -262,7 +242,7 @@ const OrderbookRow = React.memo(
 );
 
 const MarkPriceComponent = React.memo(
-  ({ markPrice }) => {
+  ({ markPrice, smallScreen }) => {
     const { market } = useMarket();
     const previousMarkPrice = usePrevious(markPrice);
 
@@ -281,6 +261,7 @@ const MarkPriceComponent = React.memo(
     return (
       <MarkPriceTitle
         justify="center"
+        smallScreen={smallScreen}
         style={{
           fontSize: 16,
         }}
@@ -297,5 +278,6 @@ const MarkPriceComponent = React.memo(
       </MarkPriceTitle>
     );
   },
-  (prevProps, nextProps) => isEqual(prevProps, nextProps, ['markPrice']),
+  (prevProps, nextProps) =>
+    isEqual(prevProps, nextProps, ['markPrice', 'smallScreen']),
 );

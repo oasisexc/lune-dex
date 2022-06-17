@@ -22,7 +22,7 @@ export const CustomFooter = () => {
   return (
     <Footer
       style={{
-        padding: '20px 95px 40px 95px',
+        padding: window.innerWidth < 1000 ? '20px' : '20px 95px 40px 95px',
         background: '#f8f9fa',
         color: '#b1bac3',
       }}
