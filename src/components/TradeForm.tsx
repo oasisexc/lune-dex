@@ -59,7 +59,7 @@ export default function TradeForm({
   const baseCurrencyAccount = useSelectedBaseCurrencyAccount();
   const quoteCurrencyAccount = useSelectedQuoteCurrencyAccount();
   const openOrdersAccount = useSelectedOpenOrdersAccount(true);
-  const { wallet, connected } = useWallet();
+  const { wallet, connected, connect } = useWallet();
   const sendConnection = useSendConnection();
   const markPrice = useMarkPrice();
   useFeeDiscountKeys();
@@ -551,8 +551,8 @@ export default function TradeForm({
           </Row>
 
           <BuyButton
-            disabled={!price || !baseSize}
-            onClick={onSubmit}
+            disabled={!price || !baseSize || !connected}
+            onClick={onsubmit}
             block
             type="primary"
             size="large"
@@ -560,9 +560,13 @@ export default function TradeForm({
             style={{
               marginTop: smallScreen ? 10 : 20,
               height: smallScreen ? 40 : 48,
-              background: side === 'buy' ? '#26a69a' : '#ef5350',
+              background: !connected
+                ? '#dedee2'
+                : side === 'buy'
+                ? '#26a69a'
+                : '#ef5350',
               // border: '1px solid #5AC4BE',
-              color: '#ffffff',
+              color: !connected ? '#b1bac3' : '#ffffff',
               border: 'none',
               borderRadius: 4,
               fontSize: '14px',
@@ -570,7 +574,11 @@ export default function TradeForm({
             }}
           >
             {/* LIMIT {side.toUpperCase()} {baseCurrency} */}
-            {side === 'buy' ? '매수하기' : '매도하기'}
+            {!connected
+              ? '지갑을 연결해주세요'
+              : side === 'buy'
+              ? '매수하기'
+              : '매도하기'}
           </BuyButton>
         </div>
       </div>

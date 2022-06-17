@@ -1,16 +1,18 @@
 import BalancesTable from './BalancesTable';
 import OpenOrderTable from './OpenOrderTable';
 import React, { useState } from 'react';
-import { Col, Row } from 'antd';
+import { Button, Col, Row } from 'antd';
 import FillsTable from './FillsTable';
 import FloatingElement from '../layout/FloatingElement';
 import FeesTable from './FeesTable';
 import { useOpenOrders, useBalances, useMarket } from '../../utils/markets';
+import { useWallet } from '../../utils/wallet';
 
 export default function Index({ smallScreen }) {
   const { market } = useMarket();
   const marketAddress = market?.address.toString();
   const [activeKeyStr, setActiveKeyStr] = useState('orders');
+  const { connected, connect } = useWallet();
 
   return (
     <FloatingElement style={{ flex: 1, paddingTop: 4 }}>
@@ -100,20 +102,53 @@ export default function Index({ smallScreen }) {
             </Col>
           ) : null} */}
       </Row>
-      <div
-        style={{
-          height: 400,
-          borderBottom: '',
-          padding: 16,
-        }}
-      >
-        {activeKeyStr && activeKeyStr === 'orders' ? <OpenOrdersTab /> : null}
-        {activeKeyStr && activeKeyStr === 'fills' ? <FillsTable /> : null}
-        {/* {activeKeyStr && activeKeyStr === 'balances' ? <BalancesTab /> : null} */}
-        {/* {activeKeyStr && activeKeyStr === 'fees' ? (
-            <FeesTable market={{ marketAddress }} />
-          ) : null} */}
-      </div>
+      {!connected ? (
+        <div
+          style={{
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+            flexDirection: 'column',
+            height: smallScreen ? 180 : 400,
+            padding: 16,
+          }}
+        >
+          <p style={{ color: '#636c7d', margin: '4px' }}>지갑을 연결해주세요</p>
+          <Button
+            onClick={connect}
+            block
+            type="primary"
+            size="large"
+            style={{
+              marginTop: smallScreen ? 10 : 20,
+              height: smallScreen ? 40 : 48,
+              background: '#343847',
+              color: '#ffffff',
+              border: 'none',
+              borderRadius: 4,
+              fontSize: '14px',
+              fontWeight: 'bold',
+              width: '180px',
+            }}
+          >
+            지갑 연결하기
+          </Button>
+        </div>
+      ) : (
+        <div
+          style={{
+            height: smallScreen ? 300 : 400,
+            padding: 16,
+          }}
+        >
+          {activeKeyStr && activeKeyStr === 'orders' ? <OpenOrdersTab /> : null}
+          {activeKeyStr && activeKeyStr === 'fills' ? <FillsTable /> : null}
+          {/* {activeKeyStr && activeKeyStr === 'balances' ? <BalancesTab /> : null} */}
+          {/* {activeKeyStr && activeKeyStr === 'fees' ? (
+                <FeesTable market={{ marketAddress }} />
+              ) : null} */}
+        </div>
+      )}
     </FloatingElement>
   );
 }

@@ -39,7 +39,7 @@ export default function StandaloneBalancesDisplay() {
   const balances = useBalances();
   const openOrdersAccount = useSelectedOpenOrdersAccount(true);
   const connection = useSendConnection();
-  const { wallet, connected } = useWallet();
+  const { wallet, connected, connect } = useWallet();
   const [baseOrQuote, setBaseOrQuote] = useState('');
   const baseCurrencyAccount = useSelectedBaseCurrencyAccount();
   const quoteCurrencyAccount = useSelectedQuoteCurrencyAccount();
@@ -143,127 +143,169 @@ export default function StandaloneBalancesDisplay() {
       >
         나의 자산
       </div>
-      <div>
-        <Row
+      {!connected ? (
+        <div
           style={{
-            color: '#21252a',
-            textAlign: 'right',
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+            flexDirection: 'column',
+            height: 150,
+            padding: 16,
           }}
-        ></Row>
-        {formattedBalances.map(
-          ([currency, balances, baseOrQuote, mint], index) => (
-            <React.Fragment key={index}>
-              <Row
-                style={{
-                  marginTop: 12,
-                }}
-              >
-                <Col
-                  span={4}
-                  style={{
-                    color: '#21252a',
-                    textAlign: 'left',
-                    fontSize: '16px',
-                    fontWeight: 'bold',
-                    lineHeight: '32px',
-                  }}
-                >
-                  {currency}
-                </Col>
-                {connected && (
-                  <StandaloneTokenAccountsSelect
-                    accounts={tokenAccounts
-                      ?.filter(
-                        (account) => account.effectiveMint.toBase58() === mint,
-                      )
-                      .sort((a, b) =>
-                        a.pubkey.toString() === wallet?.publicKey.toString()
-                          ? -1
-                          : 1,
-                      )}
-                    mint={mint}
-                    label
-                  />
-                )}
-              </Row>
-              <Row style={{ marginTop: 20 }}>
-                <Col span={5}>{'지갑잔고'}</Col>
-                <Col span={14} style={{ textAlign: 'right' }}>
-                  {balances && balances.wallet}
-                </Col>
-                <Col span={5}></Col>
-              </Row>
-              <Row
-                style={{
-                  paddingTop: 16,
-                }}
-              >
-                <Col span={6}>
-                  {'정산대기'}{' '}
-                  <Popover
-                    content={
-                      <div style={{ margin: 0, padding: '5px' }}>
-                        <p
-                          style={{
-                            lineHeight: '14px',
-                            padding: '0 0 8px 0 ',
-                            margin: 0,
-                          }}
-                        >
-                          DEX와 상호작용하는 중개지갑에 있는 자산입니다.{' '}
-                        </p>
-                        <p
-                          style={{
-                            lineHeight: '14px',
-                            padding: '0 0 8px 0 ',
-                            margin: 0,
-                          }}
-                        >
-                          주문이 완료되거나 취소되면 정산대기 금액에 표시됩니다.
-                        </p>
-                        <p
-                          style={{ lineHeight: '14px', padding: 0, margin: 0 }}
-                        >
-                          우측 정산버튼을 통해 연결된 본인 소유 지갑으로 자산을
-                          보내야합니다.
-                        </p>
-                      </div>
-                    }
-                    placement="bottomRight"
-                    trigger="hover"
+        >
+          <p style={{ color: '#636c7d', margin: '4px' }}>지갑을 연결해주세요</p>
+          <Button
+            onClick={connect}
+            block
+            type="primary"
+            size="large"
+            style={{
+              marginTop: window.innerWidth < 1000 ? 10 : 20,
+              height: window.innerWidth < 1000 ? 40 : 48,
+              background: '#343847',
+              color: '#ffffff',
+              border: 'none',
+              borderRadius: 4,
+              fontSize: '14px',
+              fontWeight: 'bold',
+              width: '180px',
+            }}
+          >
+            지갑 연결하기
+          </Button>
+        </div>
+      ) : (
+        <>
+          <div>
+            <Row
+              style={{
+                color: '#21252a',
+                textAlign: 'right',
+              }}
+            ></Row>
+            {formattedBalances.map(
+              ([currency, balances, baseOrQuote, mint], index) => (
+                <React.Fragment key={index}>
+                  <Row
+                    style={{
+                      marginTop: 12,
+                    }}
                   >
-                    <InfoCircleOutlined
-                      style={{ color: '#2abdd2', marginRight: '10px' }}
-                    />
-                  </Popover>
-                </Col>
+                    <Col
+                      span={4}
+                      style={{
+                        color: '#21252a',
+                        textAlign: 'left',
+                        fontSize: '16px',
+                        fontWeight: 'bold',
+                        lineHeight: '32px',
+                      }}
+                    >
+                      {currency}
+                    </Col>
+                    {connected && (
+                      <StandaloneTokenAccountsSelect
+                        accounts={tokenAccounts
+                          ?.filter(
+                            (account) =>
+                              account.effectiveMint.toBase58() === mint,
+                          )
+                          .sort((a, b) =>
+                            a.pubkey.toString() === wallet?.publicKey.toString()
+                              ? -1
+                              : 1,
+                          )}
+                        mint={mint}
+                        label
+                      />
+                    )}
+                  </Row>
+                  <Row style={{ marginTop: 20 }}>
+                    <Col span={5}>{'지갑잔고'}</Col>
+                    <Col span={14} style={{ textAlign: 'right' }}>
+                      {balances && balances.wallet}
+                    </Col>
+                    <Col span={5}></Col>
+                  </Row>
+                  <Row
+                    style={{
+                      paddingTop: 16,
+                    }}
+                  >
+                    <Col span={7}>
+                      {'정산대기'}{' '}
+                      <Popover
+                        content={
+                          <div style={{ margin: 0, padding: '5px' }}>
+                            <p
+                              style={{
+                                lineHeight: '14px',
+                                padding: '0 0 8px 0 ',
+                                margin: 0,
+                              }}
+                            >
+                              DEX와 상호작용하는 중개지갑에 있는 자산입니다.{' '}
+                            </p>
+                            <p
+                              style={{
+                                lineHeight: '14px',
+                                padding: '0 0 8px 0 ',
+                                margin: 0,
+                              }}
+                            >
+                              주문이 완료되거나 취소되면 정산대기 금액에
+                              표시됩니다.
+                            </p>
+                            <p
+                              style={{
+                                lineHeight: '14px',
+                                padding: 0,
+                                margin: 0,
+                              }}
+                            >
+                              우측 정산버튼을 통해 연결된 본인 소유 지갑으로
+                              자산을 보내야합니다.
+                            </p>
+                          </div>
+                        }
+                        placement="bottomRight"
+                        trigger="hover"
+                      >
+                        <InfoCircleOutlined
+                          style={{ color: '#2abdd2', marginRight: '10px' }}
+                        />
+                      </Popover>
+                    </Col>
 
-                <Col span={13}>{balances && balances.unsettled}</Col>
-                <Col span={5} style={{ textAlign: 'right' }}>
-                  <Popover
-                    content={
-                      '정산대기 중인 자산을 연결된 본인 소유 지갑으로 보냅니다.'
-                    }
-                    placement="bottomRight"
-                    trigger="hover"
-                  >
-                    <ActionButton size="small" onClick={onSettleFunds}>
-                      정산
-                    </ActionButton>
-                  </Popover>
-                </Col>
-              </Row>
-              {index === 0 ? (
-                <Divider style={{ margin: '16px 0 10px' }} />
-              ) : null}
-            </React.Fragment>
-          ),
-        )}
-      </div>
-      <DepositDialog
-        baseOrQuote={baseOrQuote}
-        onClose={() => setBaseOrQuote('')}
-      />
+                    <Col span={12}>{balances && balances.unsettled}</Col>
+                    <Col span={5} style={{ textAlign: 'right' }}>
+                      <Popover
+                        content={
+                          '정산대기 중인 자산을 연결된 본인 소유 지갑으로 보냅니다.'
+                        }
+                        placement="bottomRight"
+                        trigger="hover"
+                      >
+                        <ActionButton size="small" onClick={onSettleFunds}>
+                          정산
+                        </ActionButton>
+                      </Popover>
+                    </Col>
+                  </Row>
+                  {index === 0 ? (
+                    <Divider style={{ margin: '16px 0 10px' }} />
+                  ) : null}
+                </React.Fragment>
+              ),
+            )}
+          </div>
+          <DepositDialog
+            baseOrQuote={baseOrQuote}
+            onClose={() => setBaseOrQuote('')}
+          />
+        </>
+      )}
     </FloatingElement>
   );
 }
