@@ -13,12 +13,13 @@ const Title = styled.div`
 `;
 
 const SizeTitle = styled(Row)`
-  padding: 16px 0 12px;
+  padding: ${(props) =>
+    props.screen === 'small' ? '0 0 4px 0' : '16px 0 12px'};
   color: #434a59;
 `;
 
 const MarkPriceTitle = styled(Row)`
-  padding: 15px 0 12px;
+  padding: ${(props) => (props.screen === 'small' ? '0' : '15px 0 12px')};
   font-weight: 700;
 `;
 
@@ -39,9 +40,15 @@ const Line = styled.div`
 `;
 
 const Price = styled.div`
+  font-weight: bold;
+
+  color: ${(props) => (props.color ? props.color : '#000000')};
+`;
+
+const Size = styled.div`
   position: absolute;
   right: 5px;
-  color: white;
+  color: #000000;
 `;
 
 export default function Orderbook({ smallScreen, depth = 7, onPrice, onSize }) {
@@ -108,47 +115,45 @@ export default function Orderbook({ smallScreen, depth = 7, onPrice, onSize }) {
   return (
     <FloatingElement
       style={{
-        ...(smallScreen
-          ? { flex: 1 }
-          : { height: '500px', overflow: 'hidden' }),
-        height: 540,
+        height: smallScreen ? '300xp' : '500px',
+        padding: '14px 16px',
       }}
     >
-      <Title
-        style={{
-          borderTop: '1px solid #1C274F',
-          borderBottom: '1px solid #1C274F',
-          padding: '12px 0 12px 16px',
-          color: 'rgba(241, 241, 242, 0.75)',
-          fontSize: 14,
-        }}
-      >
-        Order book
-      </Title>
-      <SizeTitle>
+      {smallScreen ? null : (
+        <Title
+          style={{
+            padding: '0 0 12px 0',
+            color: '#21252a',
+            fontWeight: 'bold',
+            fontSize: 14,
+          }}
+        >
+          오더북
+        </Title>
+      )}
+      <SizeTitle screen={smallScreen ? 'small' : 'default'}>
         <Col
           span={12}
           style={{
-            textAlign: 'right',
-            color: 'rgba(241, 241, 242, 0.5)',
+            textAlign: 'left',
+            color: '#636c7d',
             fontSize: 12,
           }}
         >
-          Size ({baseCurrency})
+          호가 {smallScreen ? null : quoteCurrency}
         </Col>
         <Col
           span={12}
           style={{
             textAlign: 'right',
-            paddingRight: 20,
-            color: 'rgba(241, 241, 242, 0.5)',
+            color: '#636c7d',
             fontSize: 12,
           }}
         >
-          Price ({quoteCurrency})
+          누적수량 {smallScreen ? null : baseCurrency}
         </Col>
       </SizeTitle>
-      <div style={{ paddingBottom: 16 }}>
+      <div style={{ paddingBottom: smallScreen ? 0 : 16 }}>
         {orderbookData?.asks.map(({ price, size, sizePercent }) => (
           <OrderbookRow
             key={price + ''}
@@ -158,33 +163,15 @@ export default function Orderbook({ smallScreen, depth = 7, onPrice, onSize }) {
             sizePercent={sizePercent}
             onPriceClick={() => onPrice(price)}
             onSizeClick={() => onSize(size)}
+            color={'#ef5350'}
           />
         ))}
       </div>
-      <MarkPriceComponent markPrice={markPrice} />
-      <SizeTitle>
-        <Col
-          span={12}
-          style={{
-            textAlign: 'right',
-            color: 'rgba(241, 241, 242, 0.5)',
-            fontSize: 12,
-          }}
-        >
-          Size ({baseCurrency})
-        </Col>
-        <Col
-          span={12}
-          style={{
-            textAlign: 'right',
-            paddingRight: 20,
-            color: 'rgba(241, 241, 242, 0.5)',
-            fontSize: 12,
-          }}
-        >
-          Price ({quoteCurrency})
-        </Col>
-      </SizeTitle>
+      <MarkPriceComponent
+        markPrice={markPrice}
+        screen={smallScreen ? 'small' : 'default'}
+      />
+      {smallScreen ? null : <SizeTitle />}
       {orderbookData?.bids.map(({ price, size, sizePercent }) => (
         <OrderbookRow
           key={price + ''}
@@ -194,6 +181,7 @@ export default function Orderbook({ smallScreen, depth = 7, onPrice, onSize }) {
           sizePercent={sizePercent}
           onPriceClick={() => onPrice(price)}
           onSizeClick={() => onSize(size)}
+          color={'#26a69a'}
         />
       ))}
     </FloatingElement>
@@ -201,7 +189,7 @@ export default function Orderbook({ smallScreen, depth = 7, onPrice, onSize }) {
 }
 
 const OrderbookRow = React.memo(
-  ({ side, price, size, sizePercent, onSizeClick, onPriceClick }) => {
+  ({ side, price, size, sizePercent, onSizeClick, onPriceClick, color }) => {
     const element = useRef();
 
     const { market } = useMarket();
@@ -235,19 +223,17 @@ const OrderbookRow = React.memo(
         style={{ marginBottom: 3, fontSize: 12 }}
         onClick={onSizeClick}
       >
-        <Col span={12} style={{ textAlign: 'right' }}>
-          {formattedSize}
+        <Col span={12} style={{ textAlign: 'left' }}>
+          <Price onClick={onPriceClick} color={color}>
+            {formattedPrice}
+          </Price>
         </Col>
         <Col span={12} style={{ textAlign: 'right' }}>
           <Line
             data-width={sizePercent + '%'}
-            data-bgcolor={
-              side === 'buy'
-                ? 'rgba(65, 199, 122, 0.6)'
-                : 'rgba(242, 60, 105, 0.6)'
-            }
+            data-bgcolor={side === 'buy' ? '#effffe' : '#ffe9e9'}
           />
-          <Price onClick={onPriceClick}>{formattedPrice}</Price>
+          <Size>{formattedSize}</Size>
         </Col>
       </Row>
     );
@@ -257,15 +243,15 @@ const OrderbookRow = React.memo(
 );
 
 const MarkPriceComponent = React.memo(
-  ({ markPrice }) => {
+  ({ markPrice, smallScreen }) => {
     const { market } = useMarket();
     const previousMarkPrice = usePrevious(markPrice);
 
     let markPriceColor =
       markPrice > previousMarkPrice
-        ? '#41C77A'
+        ? '#26a69a'
         : markPrice < previousMarkPrice
-        ? '#F23B69'
+        ? '#ef5350'
         : 'white';
 
     let formattedMarkPrice =
@@ -276,9 +262,8 @@ const MarkPriceComponent = React.memo(
     return (
       <MarkPriceTitle
         justify="center"
+        screen={smallScreen ? 'small' : 'default'}
         style={{
-          borderTop: '1px solid #1C274F',
-          borderBottom: '1px solid #1C274F',
           fontSize: 16,
         }}
       >
@@ -294,5 +279,6 @@ const MarkPriceComponent = React.memo(
       </MarkPriceTitle>
     );
   },
-  (prevProps, nextProps) => isEqual(prevProps, nextProps, ['markPrice']),
+  (prevProps, nextProps) =>
+    isEqual(prevProps, nextProps, ['markPrice', 'smallScreen']),
 );

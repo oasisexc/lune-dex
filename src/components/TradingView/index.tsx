@@ -35,16 +35,15 @@ export interface ChartContainerProps {
 
 export interface ChartContainerState {}
 
-export const TVChartContainer = () => {
+export const TVChartContainer = (props) => {
   let datafeed = useTvDataFeed();
-  let resolution = window.localStorage.getItem('resolution') ?? '60'
-
+  let resolution = window.localStorage.getItem('resolution') ?? '60';
   try {
-    convertResolutionToApi(resolution)
-  } catch(e) {
-    resolution = '60'
+    convertResolutionToApi(resolution);
+  } catch (e) {
+    resolution = '60';
   }
-  
+
   const defaultProps: ChartContainerProps = {
     symbol: 'RAY/USDT',
     // @ts-ignore
@@ -60,7 +59,7 @@ export const TVChartContainer = () => {
     fullscreen: false,
     autosize: true,
     studiesOverrides: {},
-    timeframe: '1D'
+    timeframe: '1D',
   };
 
   const tvWidgetRef = React.useRef<IChartingLibraryWidget | null>(null);
@@ -78,13 +77,26 @@ export const TVChartContainer = () => {
     const widgetOptions: ChartingLibraryWidgetOptions = {
       symbol: marketName as string,
       datafeed: datafeed,
-      interval: defaultProps.interval as ChartingLibraryWidgetOptions['interval'],
-      container_id: defaultProps.containerId as ChartingLibraryWidgetOptions['container_id'],
+      interval:
+        defaultProps.interval as ChartingLibraryWidgetOptions['interval'],
+      container_id:
+        defaultProps.containerId as ChartingLibraryWidgetOptions['container_id'],
       library_path: defaultProps.libraryPath as string,
       auto_save_delay: 5,
-
-      locale: 'en',
-      disabled_features: ['use_localstorage_for_settings'],
+      timezone: 'Asia/Seoul',
+      locale: 'ko',
+      disabled_features: props.smallScreen
+        ? [
+            'left_toolbar',
+            'header_widget',
+            'timeframes_toolbar',
+            'edit_buttons_in_legend',
+            'context_menus',
+            'control_bar',
+            'border_around_the_chart',
+            'use_localstorage_for_settings',
+          ]
+        : ['use_localstorage_for_settings'],
       enabled_features: ['study_templates'],
       load_last_chart: true,
       client_id: defaultProps.clientId,
@@ -92,16 +104,19 @@ export const TVChartContainer = () => {
       fullscreen: defaultProps.fullscreen,
       autosize: defaultProps.autosize,
       studies_overrides: defaultProps.studiesOverrides,
-      theme: defaultProps.theme === 'Dark' ? 'Dark' : 'Light',
+      theme: 'Light',
+      // theme: defaultProps.theme === 'Dark' ? 'Dark' : 'Light',
       overrides: {
         ...savedProperties,
-        'mainSeriesProperties.candleStyle.upColor': '#41C77A',
-        'mainSeriesProperties.candleStyle.downColor': '#F23B69',
+        'mainSeriesProperties.candleStyle.upColor': '#26a69a',
+        'mainSeriesProperties.candleStyle.downColor': '#ef5350',
         // 'mainSeriesProperties.candleStyle.borderColor': '#378658',
-        'mainSeriesProperties.candleStyle.borderUpColor': '#41C77A',
-        'mainSeriesProperties.candleStyle.borderDownColor': '#F23B69',
-        'mainSeriesProperties.candleStyle.wickUpColor': '#41C77A',
-        'mainSeriesProperties.candleStyle.wickDownColor': '#F23B69',
+        'mainSeriesProperties.candleStyle.borderUpColor': '#26a69a',
+        'mainSeriesProperties.candleStyle.borderDownColor': '#ef5350',
+        'mainSeriesProperties.candleStyle.wickUpColor': '#26a69a',
+        'mainSeriesProperties.candleStyle.wickDownColor': '#ef5350',
+        'mainSeriesProperties.barStyle.upColor': '#26a69a',
+        'mainSeriesProperties.barStyle.downColor': 'blue',
       },
       // @ts-ignore
       save_load_adapter: saveLoadAdapter,
@@ -144,6 +159,29 @@ export const TVChartContainer = () => {
         // @ts-ignore
         .subscribe('onAutoSaveNeeded', () => tvWidget.saveChartToServer());
     });
-  }, [chartProperties, datafeed, defaultProps.autosize, defaultProps.clientId, defaultProps.containerId, defaultProps.fullscreen, defaultProps.interval, defaultProps.libraryPath, defaultProps.studiesOverrides, defaultProps.theme, defaultProps.userId, marketName]);
-  return <div style={{ height: window.innerWidth < 1000 ? '50vh' : 540 }} id={defaultProps.containerId} className={'TVChartContainer'} />;
+  }, [
+    props.smallScreen,
+    chartProperties,
+    datafeed,
+    defaultProps.autosize,
+    defaultProps.clientId,
+    defaultProps.containerId,
+    defaultProps.fullscreen,
+    defaultProps.interval,
+    defaultProps.libraryPath,
+    defaultProps.studiesOverrides,
+    defaultProps.theme,
+    defaultProps.userId,
+    marketName,
+  ]);
+  return (
+    <div
+      style={{
+        height: window.innerWidth < 1000 ? '40vh' : 540,
+        padding: '10px',
+      }}
+      id={defaultProps.containerId}
+      className={'TVChartContainer'}
+    />
+  );
 };

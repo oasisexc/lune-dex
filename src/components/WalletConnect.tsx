@@ -9,16 +9,26 @@ export default function WalletConnect() {
 
   const menu = (
     <Menu>
-      {connected && <LinkAddress shorten={true} address={publicKey} />}
+      {connected && (
+        <Menu.Item key="3" onClick={disconnect}>
+          연결끊기
+        </Menu.Item>
+      )}
       <Menu.Item key="3" onClick={select}>
-        Change Wallet
+        지갑변경
       </Menu.Item>
     </Menu>
   );
 
   return (
-    <Dropdown.Button onClick={connected ? disconnect : connect} overlay={menu}>
-      {connected ? 'Disconnect' : 'Connect'}
+    <Dropdown.Button onClick={connect} overlay={menu}>
+      {connected ? (
+        <div style={{ marginTop: '-4px' }}>
+          <LinkAddress shorten={true} address={publicKey} />
+        </div>
+      ) : (
+        '지갑연결'
+      )}
     </Dropdown.Button>
   );
 }

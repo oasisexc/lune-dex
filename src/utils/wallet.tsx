@@ -19,48 +19,54 @@ import {
   MathWalletAdapter,
   SolflareExtensionWalletAdapter,
 } from '../wallet-adapters';
+import {
+  SolletIcon,
+  LedgerIcon,
+  SolflareIcon,
+  MathWalletIcon,
+  PhantomIcon,
+} from '../assets/walletIcon';
 
-const ASSET_URL =
-  'https://cdn.jsdelivr.net/gh/solana-labs/oyster@main/assets/wallets';
 export const WALLET_PROVIDERS = [
   {
     name: 'sollet.io',
     url: 'https://www.sollet.io',
-    icon: `${ASSET_URL}/sollet.svg`,
+    icon: <SolletIcon />,
   },
   {
     name: 'Sollet Extension',
     url: 'https://www.sollet.io/extension',
-    icon: `${ASSET_URL}/sollet.svg`,
+    icon: <SolletIcon />,
     adapter: SolletExtensionAdapter as any,
   },
   {
     name: 'Ledger',
     url: 'https://www.ledger.com',
-    icon: `${ASSET_URL}/ledger.svg`,
+    icon: <LedgerIcon />,
     adapter: LedgerWalletAdapter,
   },
   {
     name: 'Solflare',
     url: 'https://solflare.com/access-wallet',
-    icon: `${ASSET_URL}/solflare.svg`,
+    icon: <SolflareIcon />,
   },
   {
     name: 'Solflare Extension',
     url: 'https://solflare.com',
-    icon: `${ASSET_URL}/solflare.svg`,
+    icon: <SolflareIcon />,
     adapter: SolflareExtensionWalletAdapter,
   },
   {
     name: 'Phantom',
     url: 'https://www.phantom.app',
-    icon: `https://www.phantom.app/img/logo.png`,
+    icon: <PhantomIcon />,
     adapter: PhantomWalletAdapter,
   },
   {
     name: 'MathWallet',
     url: 'https://www.mathwallet.org',
-    icon: `${ASSET_URL}/mathwallet.svg`,
+    icon: <MathWalletIcon />,
+
     adapter: MathWalletAdapter,
   },
 ];
@@ -128,8 +134,8 @@ export function WalletProvider({ children }) {
               : walletPublicKey;
 
           notify({
-            message: 'Wallet update',
-            description: 'Connected to wallet ' + keyToDisplay,
+            message: '지갑 연결에 성공했습니다',
+            description: keyToDisplay,
           });
         }
       });
@@ -137,8 +143,8 @@ export function WalletProvider({ children }) {
       wallet.on('disconnect', () => {
         setConnected(false);
         notify({
-          message: 'Wallet update',
-          description: 'Disconnected from wallet',
+          message: '지갑 연결을 종료하였습니다',
+          // description: 'Disconnected from wallet',
         });
         localStorage.removeItem('feeDiscountKey');
       });
@@ -182,8 +188,9 @@ export function WalletProvider({ children }) {
     >
       {children}
       <Modal
-        title="Select Wallet"
-        okText="Connect"
+        title="지갑 선택"
+        okText="지갑 연결"
+        cancelText={'취소'}
         visible={isModalVisible}
         okButtonProps={{ style: { display: 'none' } }}
         onCancel={close}
@@ -202,20 +209,16 @@ export function WalletProvider({ children }) {
               size="large"
               type={providerUrl === provider.url ? 'primary' : 'ghost'}
               onClick={onClick}
-              icon={
-                <img
-                  alt={`${provider.name}`}
-                  width={20}
-                  height={20}
-                  src={provider.icon}
-                  style={{ marginRight: 8 }}
-                />
-              }
+              icon={<Icon>{provider.icon}</Icon>}
               style={{
-                display: 'block',
+                display: 'flex',
+                justifyContent: 'flex-start',
+                alignItems: 'center',
                 width: '100%',
                 textAlign: 'left',
+                lineHeight: '24px',
                 marginBottom: 8,
+                // backgroundColor: '#ced4da',
               }}
             >
               {provider.name}
@@ -249,3 +252,13 @@ export function useWallet() {
     },
   };
 }
+
+const Icon = ({ children }) => {
+  return (
+    <div
+      style={{ margin: '0 8px 0 0', display: 'inline-block', height: '20px' }}
+    >
+      {children}
+    </div>
+  );
+};

@@ -21,14 +21,14 @@ import LinkAddress from '../components/LinkAddress';
 import { MarketInfo } from '../utils/types';
 import Orderbook from '../components/Orderbook';
 import StandaloneBalancesDisplay from '../components/StandaloneBalancesDisplay';
-import { TVChartContainer } from '../components/TradingView'
+import { TVChartContainer } from '../components/TradingView';
 import TradeForm from '../components/TradeForm';
 import TradesTable from '../components/TradesTable';
 import UserInfoTable from '../components/UserInfoTable';
 import { notify } from '../utils/notifications';
 import styled from 'styled-components';
 import { nanoid } from 'nanoid';
-
+import WhiteBox from '../components/layout/WhiteBox';
 
 const { Option, OptGroup } = Select;
 
@@ -36,10 +36,10 @@ const Wrapper = styled.div`
   height: 100%;
   display: flex;
   flex-direction: column;
-  padding: 16px 16px;
+
   .borderNone .ant-select-selector {
     border: none !important;
-  };
+  }
 `;
 
 export default function TradePage() {
@@ -64,162 +64,13 @@ export default function TradePage() {
   );
 }
 
-function TradePageInner() {
-  const {
-    market,
-    marketName,
-    customMarkets,
-    setCustomMarkets,
-    setMarketAddress,
-  } = useMarket();
-  // const markets = useMarketsList();
-  const [handleDeprecated, setHandleDeprecated] = useState(false);
-  const [addMarketVisible, setAddMarketVisible] = useState(false);
-  const deprecatedMarkets = useUnmigratedDeprecatedMarkets();
-  // const [dimensions, setDimensions] = useState({
-  const [dimensions] = useState({
-    height: window.innerHeight,
-    width: window.innerWidth,
-  });
-
-  useEffect(() => {
-    document.title = marketName ? `${marketName} — Raydium` : 'Raydium';
-  }, [marketName]);
-
-  const changeOrderRef = useRef<
-    ({ size, price }: { size?: number; price?: number }) => void
-    >();
-
-  // useEffect(() => {
-  //   const handleResize = () => {
-  //     setDimensions({
-  //       height: window.innerHeight,
-  //       width: window.innerWidth,
-  //     });
-  //   };
-
-  //   window.addEventListener('resize', handleResize);
-  //   return () => window.removeEventListener('resize', handleResize);
-  // }, []);
-
-  const width = dimensions?.width;
-
-  const componentProps = {
-    onChangeOrderRef: (ref) => (changeOrderRef.current = ref),
-    onPrice: useCallback(
-      (price) => changeOrderRef.current && changeOrderRef.current({ price }),
-      [],
-    ),
-    onSize: useCallback(
-      (size) => changeOrderRef.current && changeOrderRef.current({ size }),
-      [],
-    ),
-  };
-  const component = (() => {
-    if (handleDeprecated) {
-      return (
-        <DeprecatedMarketsPage
-          switchToLiveMarkets={() => setHandleDeprecated(false)}
-        />
-      );
-    } else if (width < 1000) {
-      return <RenderSmaller {...componentProps} />;
-    } else {
-      return <RenderNormal {...componentProps} />;
-    }
-  })();
-
-  const onAddCustomMarket = (customMarket) => {
-    const marketInfo = getMarketInfos(customMarkets).some(
-      (m) => m.address.toBase58() === customMarket.address,
-    );
-    if (marketInfo) {
-      notify({
-        message: `A market with the given ID already exists`,
-        type: 'error',
-      });
-      return;
-    }
-    const newCustomMarkets = [...customMarkets, customMarket];
-    setCustomMarkets(newCustomMarkets);
-    setMarketAddress(customMarket.address);
-  };
-
-  const onDeleteCustomMarket = (address) => {
-    const newCustomMarkets = customMarkets.filter((m) => m.address !== address);
-    setCustomMarkets(newCustomMarkets);
-  };
-  // const [newMarKets] = useState(markets);
-
-  return (
-    <>
-      <CustomMarketDialog
-        visible={addMarketVisible}
-        onClose={() => setAddMarketVisible(false)}
-        onAddCustomMarket={onAddCustomMarket}
-      />
-      <Wrapper>
-        <Row
-          align="middle"
-          style={{ paddingLeft: 5, paddingRight: 5, height: 64 }}
-          gutter={16}
-        >
-          <Col>
-            <MarketSelector
-              markets={useMarketsList()}
-              setHandleDeprecated={setHandleDeprecated}
-              placeholder={'Select market'}
-              customMarkets={customMarkets}
-              onDeleteCustomMarket={onDeleteCustomMarket}
-            />
-          </Col>
-          {market ? (
-            <Col>
-              <Popover
-                content={<LinkAddress address={market.publicKey.toBase58()} />}
-                placement="bottomRight"
-                title="Market address"
-                trigger="click"
-              >
-                <InfoCircleOutlined style={{ color: '#2abdd2' }} />
-              </Popover>
-            </Col>
-          ) : null}
-          <Col>
-            <PlusCircleOutlined
-              style={{ color: '#2abdd2' }}
-              onClick={() => setAddMarketVisible(true)}
-            />
-          </Col>
-          {deprecatedMarkets && deprecatedMarkets.length > 0 && (
-            <React.Fragment>
-              <Col>
-                <Typography>
-                  You have unsettled funds on old markets! Please go through
-                  them to claim your funds.
-                </Typography>
-              </Col>
-              <Col>
-                <Button onClick={() => setHandleDeprecated(!handleDeprecated)}>
-                  {handleDeprecated ? 'View new markets' : 'Handle old markets'}
-                </Button>
-              </Col>
-            </React.Fragment>
-          )}
-        </Row>
-        {component}
-      </Wrapper>
-    </>
-  );
-}
-
 function MarketSelector({
-                          markets,
-                          placeholder,
-                          setHandleDeprecated,
-                          customMarkets,
-                          onDeleteCustomMarket,
-                        }) {
+  markets,
+  placeholder,
+  setHandleDeprecated,
+  customMarkets,
+  onDeleteCustomMarket,
+}) {
   const { market, setMarketAddress } = useMarket();
 
   const onSetMarketAddress = (marketAddress) => {
@@ -243,15 +94,20 @@ function MarketSelector({
         addList.push(arr[index].address.toBase58());
       }
     }
-    return reList
+    return reList;
   };
 
   return (
     <Select
       showSearch
       size={'large'}
-      bordered={false}
-      style={{ width: 360, border: 1 }}
+      // bordered={false}
+      style={{
+        width: 230,
+        fontWeight: 'bold',
+        cursor: 'pointer',
+        // marginLeft: '10px',
+      }}
       placeholder={placeholder || 'Select a market'}
       optionFilterProp="name"
       onSelect={onSetMarketAddress}
@@ -271,7 +127,7 @@ function MarketSelector({
               style={{
                 padding: '10px',
                 // @ts-ignore
-                backgroundColor: i % 2 === 0 ? 'rgb(39, 44, 61)' : null,
+                // backgroundColor: i % 2 === 0 ? '#f1f3f5' : null,
               }}
             >
               <Row>
@@ -293,21 +149,20 @@ function MarketSelector({
         </OptGroup>
       )}
       <OptGroup label="Markets">
-        {uniqueArray(markets)
-          .map(({ address, name, deprecated }, i) => (
-            <Option
-              value={address.toBase58()}
-              key={nanoid()}
-              name={name}
-              style={{
-                padding: '10px',
-                // @ts-ignore
-                backgroundColor: i % 2 === 0 ? 'rgb(39, 44, 61)' : null,
-              }}
-            >
-              {name} {deprecated ? ' (Deprecated)' : null}
-            </Option>
-          ))}
+        {uniqueArray(markets).map(({ address, name, deprecated }, i) => (
+          <Option
+            value={address.toBase58()}
+            key={nanoid()}
+            name={name}
+            style={{
+              padding: '10px',
+              // @ts-ignore
+              // backgroundColor: i % 2 === 0 ? '#f1f3f5' : null,
+            }}
+          >
+            {name} {deprecated ? ' (Deprecated)' : null}
+          </Option>
+        ))}
       </OptGroup>
     </Select>
   );
@@ -327,62 +182,357 @@ const DeprecatedMarketsPage = ({ switchToLiveMarkets }) => {
   );
 };
 
-const RenderNormal = ({ onChangeOrderRef, onPrice, onSize }) => {
+function TradePageInner() {
+  const {
+    market,
+    marketName,
+    customMarkets,
+    setCustomMarkets,
+    setMarketAddress,
+  } = useMarket();
+  // const markets = useMarketsList();
+  const [handleDeprecated, setHandleDeprecated] = useState(false);
+  const [addMarketVisible, setAddMarketVisible] = useState(false);
+  const deprecatedMarkets = useUnmigratedDeprecatedMarkets();
+  const [dimensions, setDimensions] = useState({
+    height: window.innerHeight,
+    width: window.innerWidth,
+  });
+
+  useEffect(() => {
+    document.title = marketName ? `${marketName} — lunedex` : 'lunedex';
+  }, [marketName]);
+
+  const changeOrderRef =
+    useRef<({ size, price }: { size?: number; price?: number }) => void>();
+
+  useEffect(() => {
+    const handleResize = () => {
+      setDimensions({
+        height: window.innerHeight,
+        width: window.innerWidth,
+      });
+    };
+
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
+  const width = dimensions?.width;
+
+  const onAddCustomMarket = (customMarket) => {
+    const marketInfo = getMarketInfos(customMarkets).some(
+      (m) => m.address.toBase58() === customMarket.address,
+    );
+    if (marketInfo) {
+      notify({
+        message: `A market with the given ID already exists`,
+        type: 'error',
+      });
+      return;
+    }
+    const newCustomMarkets = [...customMarkets, customMarket];
+    setCustomMarkets(newCustomMarkets);
+    setMarketAddress(customMarket.address);
+  };
+
+  const onDeleteCustomMarket = (address) => {
+    const newCustomMarkets = customMarkets.filter((m) => m.address !== address);
+    setCustomMarkets(newCustomMarkets);
+  };
+  // const [newMarKets] = useState(markets);
+
+  const rightProps = {
+    onChangeOrderRef: (ref) => (changeOrderRef.current = ref),
+    onPrice: useCallback(
+      (price) => changeOrderRef.current && changeOrderRef.current({ price }),
+      [],
+    ),
+    onSize: useCallback(
+      (size) => changeOrderRef.current && changeOrderRef.current({ size }),
+      [],
+    ),
+  };
+
+  const leftProps = {
+    onChangeOrderRef: (ref) => (changeOrderRef.current = ref),
+    setHandleDeprecated,
+    customMarkets,
+    onDeleteCustomMarket,
+    market,
+    setAddMarketVisible,
+    deprecatedMarkets,
+    handleDeprecated,
+  };
+
+  if (handleDeprecated) {
+    return (
+      <DeprecatedMarketsPage
+        switchToLiveMarkets={() => setHandleDeprecated(false)}
+      />
+    );
+  } else if (width < 1000) {
+    return (
+      <>
+        <CustomMarketDialog
+          visible={addMarketVisible}
+          onClose={() => setAddMarketVisible(false)}
+          onAddCustomMarket={onAddCustomMarket}
+        />
+        <Wrapper style={{ margin: '0 5px', padding: '5px 0' }}>
+          <RenderMobile {...rightProps} {...leftProps} />
+        </Wrapper>
+      </>
+    );
+  } else {
+    return (
+      <>
+        <CustomMarketDialog
+          visible={addMarketVisible}
+          onClose={() => setAddMarketVisible(false)}
+          onAddCustomMarket={onAddCustomMarket}
+        />
+        <Wrapper style={{ margin: '0 85px', padding: '16px 0' }}>
+          <Row>
+            <Col span={16}>
+              <RenderLeftCol {...leftProps} />
+            </Col>
+            <Col span={8}>
+              <RenderRightCol {...rightProps} />
+            </Col>
+          </Row>
+        </Wrapper>
+      </>
+    );
+  }
+}
+
+const RenderLeftCol = ({
+  onChangeOrderRef,
+  setHandleDeprecated,
+  customMarkets,
+  onDeleteCustomMarket,
+  market,
+  setAddMarketVisible,
+  deprecatedMarkets,
+  handleDeprecated,
+}) => {
   return (
-    <Row
-      style={{
-        minHeight: '900px',
-        flexWrap: 'nowrap',
-      }}
-    >
-      <Col
-        flex="15%"
-        style={{ height: '100%', display: 'flex', flexDirection: 'column',  minWidth: '280px' }}
-      >
-        <TradeForm setChangeOrderRef={onChangeOrderRef} />
-        <StandaloneBalancesDisplay />
-      </Col>
-
-      <Col flex="auto" style={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
-        <TVChartContainer/>
-        <UserInfoTable smallScreen={false}/>
-      </Col>
-
-      <Col
-        flex="15%" 
-        style={{ height: '100%', minWidth: '280px' }}>
-        <Orderbook smallScreen={false} onPrice={onPrice} onSize={onSize} />
-        <TradesTable smallScreen={false} />
-      </Col>
-
-    </Row>
+    <Col>
+      <WhiteBox>
+        <Row style={{ padding: '16px' }}>
+          <Row>
+            <Col>
+              <MarketSelector
+                markets={useMarketsList()}
+                setHandleDeprecated={setHandleDeprecated}
+                placeholder={'Select market'}
+                customMarkets={customMarkets}
+                onDeleteCustomMarket={onDeleteCustomMarket}
+              />
+            </Col>
+            {market ? (
+              <Col>
+                <Popover
+                  content={
+                    <LinkAddress address={market.publicKey.toBase58()} />
+                  }
+                  placement="bottomRight"
+                  title="Market address"
+                  trigger="hover"
+                >
+                  <InfoCircleOutlined
+                    style={{ color: '#26a69a', margin: '10px 0 0 10px' }}
+                  />
+                </Popover>
+              </Col>
+            ) : null}
+            <Col>
+              <PlusCircleOutlined
+                style={{ color: '#26a69a', margin: '10px 0 0 10px' }}
+                onClick={() => setAddMarketVisible(true)}
+              />
+            </Col>
+            {deprecatedMarkets && deprecatedMarkets.length > 0 && (
+              <React.Fragment>
+                <Col>
+                  <Typography>
+                    You have unsettled funds on old markets! Please go through
+                    them to claim your funds.
+                  </Typography>
+                </Col>
+                <Col>
+                  <Button
+                    onClick={() => setHandleDeprecated(!handleDeprecated)}
+                  >
+                    {handleDeprecated
+                      ? 'View new markets'
+                      : 'Handle old markets'}
+                  </Button>
+                </Col>
+              </React.Fragment>
+            )}
+          </Row>
+          <Row></Row>
+        </Row>
+      </WhiteBox>
+      <Row>
+        <Col flex="100%">
+          <WhiteBox>
+            <TVChartContainer />
+          </WhiteBox>
+        </Col>
+      </Row>
+      <Row>
+        <Col flex="40%" style={{ height: '100%', minWidth: '280px' }}>
+          <WhiteBox>
+            <StandaloneBalancesDisplay />
+          </WhiteBox>
+        </Col>
+        <Col flex="60%" style={{ height: '100%', minWidth: '280px' }}>
+          <WhiteBox>
+            <UserInfoTable smallScreen={false} />
+          </WhiteBox>
+        </Col>
+      </Row>
+    </Col>
   );
 };
 
-const RenderSmaller = ({ onChangeOrderRef, onPrice, onSize }) => {
+const RenderRightCol = ({ onPrice, onSize, onChangeOrderRef }) => {
   return (
     <>
       <Row>
-        <Col span={24}>
-          <TVChartContainer/>
+        <Col flex="50%" style={{ height: '100%' }}>
+          <WhiteBox>
+            <Orderbook smallScreen={false} onPrice={onPrice} onSize={onSize} />
+          </WhiteBox>
         </Col>
+        <Col flex="50%" style={{ height: '100%' }}>
+          <WhiteBox>
+            <TradesTable smallScreen={false} />
+          </WhiteBox>
+        </Col>
+      </Row>
+      <Row>
+        <Col flex="100%">
+          <WhiteBox>
+            <TradeForm
+              setChangeOrderRef={onChangeOrderRef}
+              smallScreen={false}
+            />
+          </WhiteBox>
+        </Col>
+      </Row>
+    </>
+  );
+};
 
-        <Col span={16}>
-          <TradeForm setChangeOrderRef={onChangeOrderRef} />
+const RenderMobile = ({
+  onPrice,
+  onSize,
+  onChangeOrderRef,
+  setHandleDeprecated,
+  customMarkets,
+  onDeleteCustomMarket,
+  market,
+  setAddMarketVisible,
+  deprecatedMarkets,
+  handleDeprecated,
+}) => {
+  return (
+    <>
+      <WhiteBox style={{ margin: '5px' }}>
+        <Row style={{ padding: '8px' }}>
+          <Col span={20}>
+            <MarketSelector
+              markets={useMarketsList()}
+              setHandleDeprecated={setHandleDeprecated}
+              placeholder={'Select market'}
+              customMarkets={customMarkets}
+              onDeleteCustomMarket={onDeleteCustomMarket}
+            />
+          </Col>
+          {market ? (
+            <Col>
+              <Popover
+                content={<LinkAddress address={market.publicKey.toBase58()} />}
+                placement="bottomRight"
+                title="Market address"
+                trigger="click"
+              >
+                <InfoCircleOutlined
+                  style={{ color: '#26a69a', margin: '10px 0 0 10px' }}
+                />
+              </Popover>
+            </Col>
+          ) : null}
+          <Col>
+            <PlusCircleOutlined
+              style={{ color: '#26a69a', margin: '10px 0 0 10px' }}
+              onClick={() => setAddMarketVisible(true)}
+            />
+          </Col>
+          {deprecatedMarkets && deprecatedMarkets.length > 0 && (
+            <React.Fragment>
+              <Col>
+                <Typography>
+                  You have unsettled funds on old markets! Please go through
+                  them to claim your funds.
+                </Typography>
+              </Col>
+              <Col>
+                <Button onClick={() => setHandleDeprecated(!handleDeprecated)}>
+                  {handleDeprecated ? 'View new markets' : 'Handle old markets'}
+                </Button>
+              </Col>
+            </React.Fragment>
+          )}
+        </Row>
+      </WhiteBox>
+      <Row>
+        <Col flex={'100%'}>
+          <WhiteBox style={{ margin: '5px' }}>
+            <TVChartContainer smallScreen={true} />
+          </WhiteBox>
         </Col>
-        <Col span={8}>
-          <Orderbook smallScreen={true} onPrice={onPrice} onSize={onSize} />
+      </Row>
+      <WhiteBox style={{ margin: '5px' }}>
+        <Row>
+          <Col span={12} style={{ height: '400px' }}>
+            <div style={{ display: 'inline' }}>
+              <Orderbook smallScreen={true} onPrice={onPrice} onSize={onSize} />
+            </div>
+          </Col>
+          <Col span={12}>
+            <div style={{ display: 'inline' }}>
+              <TradeForm
+                setChangeOrderRef={onChangeOrderRef}
+                smallScreen={true}
+              />
+            </div>
+          </Col>
+        </Row>
+      </WhiteBox>
+      <Row>
+        <Col flex="100%">
+          <WhiteBox style={{ margin: '5px' }}>
+            <UserInfoTable smallScreen={true} />
+          </WhiteBox>
         </Col>
-
-        <Col span={24}>
-          <UserInfoTable smallScreen={true}/>
+      </Row>
+      <Row>
+        <Col flex="100%">
+          <WhiteBox style={{ margin: '5px' }}>
+            <StandaloneBalancesDisplay />
+          </WhiteBox>
         </Col>
-
-        <Col xs={24} sm={12}>
-          <StandaloneBalancesDisplay/>
-        </Col>
-        <Col xs={24} sm={12}>
-          <TradesTable smallScreen={false} />
+      </Row>
+      <Row>
+        <Col flex="100%">
+          <WhiteBox style={{ margin: '5px' }}>
+            <TradesTable smallScreen={true} />
+          </WhiteBox>
         </Col>
       </Row>
     </>

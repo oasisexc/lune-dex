@@ -9,9 +9,9 @@ import { notify } from '../../utils/notifications';
 import { OrderWithMarketAndMarketName } from '../../utils/types';
 
 const CancelButton = styled(Button)`
-  color: rgba(241, 241, 242, 1);
+  color: #262626;
   // border: 1px solid rgba(194, 0, 251, 0.1);
-  border: 1px solid #C200FB;
+  border: 1px solid #c200fb;
   border-radius: 4px;
   width: 65px;
   height: 20px;
@@ -26,12 +26,14 @@ export default function OpenOrderTable({
   pageSize,
   loading,
   marketFilter,
+  smallScreen,
 }: {
   openOrders: OrderWithMarketAndMarketName[] | null | undefined;
   onCancelSuccess?: () => void;
   pageSize?: number;
   loading?: boolean;
   marketFilter?: boolean;
+  smallScreen: boolean;
 }) {
   let { wallet } = useWallet();
   let connection = useSendConnection();
@@ -42,15 +44,15 @@ export default function OpenOrderTable({
     setCancelId(order?.orderId);
     try {
       if (wallet) {
-      await cancelOrder({
-        order,
-        market: order.market,
-        connection,
-        wallet,
-      });
-    } else {
-      throw Error('Error cancelling order')
-    }
+        await cancelOrder({
+          order,
+          market: order.market,
+          connection,
+          wallet,
+        });
+      } else {
+        throw Error('Error cancelling order');
+      }
     } catch (e) {
       notify({
         message: 'Error cancelling order',
@@ -72,26 +74,60 @@ export default function OpenOrderTable({
   return (
     <Row>
       <Col span={24}>
-        <Row style={{ fontSize: 14, color: 'rgba(241, 241, 242, 0.5)', paddingBottom: 16 }}>
-          <Col span={5} style={{ textAlign: 'left' }}>Market</Col>
-          <Col span={5} style={{ textAlign: 'right' }}>Side</Col>
-          <Col span={5} style={{ textAlign: 'right' }}>Size</Col>
-          <Col span={5} style={{ textAlign: 'right' }}>Price</Col>
-          <Col span={4} style={{ textAlign: 'right' }}> </Col>
+        <Row
+          style={{
+            fontSize: 12,
+            color: 'rgba(0, 0, 0, 0.5)',
+            paddingBottom: 16,
+            textAlign: 'center',
+          }}
+        >
+          <Col span={5}>마켓</Col>
+          <Col span={5}>매수/매도</Col>
+          <Col span={5}>수량</Col>
+          <Col span={5}>가격</Col>
+          <Col span={4}></Col>
         </Row>
-        <div style={{ height: 350, overflowX: 'hidden' }}>
-          {dataSource.map(({marketName, side, size, price, orderId }, i) => (
-            <Row key={i} style={{ fontSize: 14, color: 'rgba(241, 241, 242, 1)', paddingBottom: 16 }}>
-              <Col span={5} style={{ textAlign: 'left' }}>{marketName}</Col>
-              <Col span={5} style={{ textAlign: 'right', color: 'rgba(90, 196, 190, 1)' }}>{side}</Col>
-              <Col span={5} style={{ textAlign: 'right', color: 'rgba(90, 196, 190, 1)' }}>{size}</Col>
-              <Col span={5} style={{ textAlign: 'right' }}>{price}</Col>
+        <div
+          style={{
+            height: smallScreen ? 230 : 330,
+            overflowX: 'hidden',
+            overflowY: 'auto',
+          }}
+        >
+          {dataSource.map(({ marketName, side, size, price, orderId }, i) => (
+            <Row
+              key={i}
+              style={{
+                fontSize: 12,
+                color: 'rgba(241, 241, 242, 1)',
+                paddingBottom: 16,
+              }}
+            >
+              <Col span={5} style={{ textAlign: 'left' }}>
+                {marketName}
+              </Col>
+              <Col
+                span={5}
+                style={{ textAlign: 'right', color: 'rgba(90, 196, 190, 1)' }}
+              >
+                {side}
+              </Col>
+              <Col
+                span={5}
+                style={{ textAlign: 'right', color: 'rgba(90, 196, 190, 1)' }}
+              >
+                {size}
+              </Col>
+              <Col span={5} style={{ textAlign: 'right' }}>
+                {price}
+              </Col>
               <Col span={4} style={{ textAlign: 'right' }}>
                 <CancelButton
                   onClick={() => cancel(dataSource[i])}
                   loading={cancelId + '' === orderId + ''}
                 >
-                  Cancel
+                  취소
                 </CancelButton>
               </Col>
             </Row>

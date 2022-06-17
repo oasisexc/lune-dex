@@ -39,6 +39,7 @@ export default function CustomClusterEndpointDialog({
       visible={visible}
       onOk={onSubmit}
       okText={'Add'}
+      cancelText={'취소'}
       onCancel={onDoClose}
       okButtonProps={{ disabled: !canSubmit, loading: testingConnection }}
     >

@@ -1,7 +1,12 @@
-import { Col, Row, Menu } from 'antd';
+import {
+  Col,
+  Row,
+  // Button,
+  // Menu
+} from 'antd';
 import React, { useEffect, useState } from 'react';
 import { useHistory, useLocation } from 'react-router-dom';
-import logo from '../assets/logo.svg';
+import textLogo from '../assets/textLogo.svg';
 import styled from 'styled-components';
 import { ENDPOINTS, useConnectionConfig } from '../utils/connection';
 import CustomClusterEndpointDialog from './CustomClusterEndpointDialog';
@@ -10,6 +15,9 @@ import { notify } from '../utils/notifications';
 import { Connection } from '@solana/web3.js';
 import WalletConnect from './WalletConnect';
 import { getTradePageUrl } from '../utils/markets';
+
+// import { useWallet } from '../utils/wallet';
+// import Settings from './Settings';
 
 const Wrapper = styled.div`
   // flex-direction: row;
@@ -23,75 +31,19 @@ const LogoWrapper = styled.div`
   font-weight: bold;
   cursor: pointer;
   img {
-    height: 30px;
+    height: 32px;
     margin-right: 8px;
   }
 `;
 
-const MENU = [
-   {
-    'title': 'Trading',
-    'link': '/',
-  },
-  {
-    'title': 'Swap',
-    'link': 'https://raydium.io/swap/',
-  },
-  {
-    'title': 'Liquidity',
-    'link': 'https://raydium.io/liquidity/add/',
-  },
-  {
-    'title': 'Pools',
-    'link': 'https://raydium.io/pools/',
-  },
-  {
-    'title': 'Farms',
-    'link': 'https://raydium.io/farms/',
-  },
-  {
-    'title': 'Staking',
-    'link': 'https://raydium.io/staking/',
-  },
-  {
-    'title': 'AcceleRaytor',
-    'link': 'https://v1.raydium.io/acceleRaytor/',
-  },
-  {
-    'title': 'DropZone',
-    'link': 'https://dropzone.raydium.io/',
-  },
-  {
-    'title': 'NFTs',
-    'child': [
-      {
-        'title': 'Browse NFTs',
-        'link': 'https://nft.raydium.io/marketplace'
-      },
-      {
-        'title': 'Explore Collections',
-        'link': 'https://nft.raydium.io/collections'
-      },
-    ]
-  },
-  {
-    'title': 'Migrate',
-    'link': 'https://raydium.io/migrate/',
-  },
-  
-]
-
 export default function TopBar() {
-  const {
-    endpointInfo,
-    setEndpoint,
-    availableEndpoints,
-    setCustomEndpoints,
-  } = useConnectionConfig();
+  const { endpointInfo, setEndpoint, availableEndpoints, setCustomEndpoints } =
+    useConnectionConfig();
   const [addEndpointVisible, setAddEndpointVisible] = useState(false);
   const [testingConnection, setTestingConnection] = useState(false);
   const location = useLocation();
   const history = useHistory();
+  // const { connected, wallet } = useWallet();
 
   const onAddCustomEndpoint = (info: EndpointInfo) => {
     const existingEndpoint = availableEndpoints.some(
@@ -149,22 +101,54 @@ export default function TopBar() {
   const tradePageUrl = location.pathname.startsWith('/market/')
     ? location.pathname
     : getTradePageUrl();
-  
-    const { SubMenu } = Menu;
 
-  const menuDiv = 
-  <Menu mode="horizontal" defaultSelectedKeys={['Trading']} style={{fontSize: '16px', display: 'flex', justifyContent: 'center',background: '#0F1429'}} selectable={false} >
-    {MENU.map(item => {
-      if (item.child === undefined) {
-        return <Menu.Item key={item.title}><a href={item.link} target={item.link.startsWith('/') ? '_self' : '_blank'} rel="noopener noreferrer">{item.title}</a></Menu.Item>
-      } else {
-        return <SubMenu key={item.title} title={item.title}>
-          {item.child.map(itemChild => <Menu.Item key={itemChild.title}><a href={itemChild.link} target={itemChild.link.startsWith('/') ? '_self' : '_blank'} rel="noopener noreferrer">{itemChild.title}</a></Menu.Item>)}
-        </SubMenu>
-      }
-    }
-    )}
-    </Menu>
+  // const { SubMenu } = Menu;
+
+  // const menuDiv = (
+  //   <Menu
+  //     mode="horizontal"
+  //     defaultSelectedKeys={['Trading']}
+  //     style={{
+  //       fontSize: '16px',
+  //       display: 'flex',
+  //       justifyContent: 'center',
+  //       background: '#f8f9fa',
+  //     }}
+  //     selectable={false}
+  //   >
+  //     {MENU.map((item) => {
+  //       if (item.child === undefined) {
+  //         return (
+  //           <Menu.Item key={item.title}>
+  //             <a
+  //               href={item.link}
+  //               target={item.link.startsWith('/') ? '_self' : '_blank'}
+  //               rel="noopener noreferrer"
+  //             >
+  //               {item.title}
+  //             </a>
+  //           </Menu.Item>
+  //         );
+  //       } else {
+  //         return (
+  //           <SubMenu key={item.title} title={item.title}>
+  //             {item.child.map((itemChild) => (
+  //               <Menu.Item key={itemChild.title}>
+  //                 <a
+  //                   href={itemChild.link}
+  //                   target={itemChild.link.startsWith('/') ? '_self' : '_blank'}
+  //                   rel="noopener noreferrer"
+  //                 >
+  //                   {itemChild.title}
+  //                 </a>
+  //               </Menu.Item>
+  //             ))}
+  //           </SubMenu>
+  //         );
+  //       }
+  //     })}
+  //   </Menu>
+  // );
 
   return (
     <>
@@ -174,17 +158,68 @@ export default function TopBar() {
         onAddCustomEndpoint={onAddCustomEndpoint}
         onClose={() => setAddEndpointVisible(false)}
       />
-      <Wrapper style={{ background: '#0F1429'}}>
-        <Row wrap={false} style={{ paddingTop: 25, height: 70 }}>
+      <Wrapper
+        style={{
+          background: '#ffffff',
+          boxShadow: '0 1px 0 0 rgba(0, 0, 0, 0.06)',
+        }}
+      >
+        <Row wrap={false} style={{ height: 64 }}>
           <Col flex="none">
-            <LogoWrapper onClick={() => history.push(tradePageUrl)} style={{ paddingLeft: 40}}>
-              <img src={logo} alt="" style={{ width: 145, height: 40 }} />
+            <LogoWrapper
+              onClick={() => history.push(tradePageUrl)}
+              style={{ paddingLeft: 20, paddingTop: 16 }}
+            >
+              <img src={textLogo} alt="" style={{ width: 121, height: 32 }} />
             </LogoWrapper>
           </Col>
-          <Col flex="auto" style={{ textAlign: 'center'}}>
-            {menuDiv}
+          <Col flex="auto" style={{ textAlign: 'center' }}>
+            {/* {menuDiv} */}
           </Col>
-          <Col flex="none" style={{ paddingRight: 20}}>
+          {/* <Col>
+            <Popover
+              content={endpoint}
+              placement="bottomRight"
+              title="URL"
+              trigger="hover"
+            >
+              <InfoCircleOutlined
+                style={{ color: '#2abdd2', marginRight: '10px' }}
+              />
+            </Popover>
+          </Col>
+          <Col>
+            <Select
+              onSelect={setEndpoint}
+              value={endpoint}
+              style={{ marginRight: 8, width: '150px' }}
+            >
+              {availableEndpoints.map(({ name, endpoint }) => (
+                <Select.Option value={endpoint} key={endpoint}>
+                  {name}
+                </Select.Option>
+              ))}
+            </Select>
+          </Col> */}
+
+          {/* <Col>
+            {connected && (
+              <div>
+                <Popover
+                  content={<Settings autoApprove={wallet?.autoApprove} />}
+                  placement="bottomRight"
+                  title="Settings"
+                  trigger="click"
+                >
+                  <Button style={{ marginRight: 8 }}>
+                    <SettingOutlined />
+                    Settings
+                  </Button>
+                </Popover>
+              </div>
+            )}
+          </Col> */}
+          <Col flex="none" style={{ paddingRight: 20 }}>
             <WalletConnect />
           </Col>
         </Row>

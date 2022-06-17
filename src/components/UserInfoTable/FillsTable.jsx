@@ -2,7 +2,7 @@ import React from 'react';
 import { Row, Col } from 'antd';
 import { useFills, useMarket } from '../../utils/markets';
 
-export default function FillsTable() {
+export default function FillsTable({ smallScreen }) {
   const fills = useFills();
 
   const { quoteCurrency } = useMarket();
@@ -19,31 +19,28 @@ export default function FillsTable() {
         <Col span={24}>
           <Row
             style={{
-              fontSize: 14,
-              color: 'rgba(241, 241, 242, 0.5)',
+              fontSize: 12,
+              color: '#636c7d',
               paddingBottom: 16,
+              textAlign: 'center',
             }}
           >
-            <Col span={4} style={{ textAlign: 'left' }}>
-              Market
-            </Col>
-            <Col span={4} style={{ textAlign: 'right' }}>
-              Side
-            </Col>
-            <Col span={4} style={{ textAlign: 'right' }}>
-              Size
-            </Col>
-            <Col span={4} style={{ textAlign: 'right' }}>
-              Price
-            </Col>
-            <Col span={4} style={{ textAlign: 'right' }}>
-              Liquidity
-            </Col>
-            <Col span={4} style={{ textAlign: 'right' }}>
-              {quoteCurrency ? `Fees (${quoteCurrency})` : 'Fees'}
+            <Col span={4}>마켓</Col>
+            <Col span={4}>매수/매도</Col>
+            <Col span={4}>수량</Col>
+            <Col span={4}>가격</Col>
+            <Col span={4}>유동성</Col>
+            <Col span={4}>
+              {quoteCurrency ? `수수료 (${quoteCurrency})` : '수수료'}
             </Col>
           </Row>
-          <div style={{ height: 350, overflowX: 'hidden' }}>
+          <div
+            style={{
+              height: smallScreen ? 230 : 330,
+              overflowX: 'hidden',
+              overflowY: 'auto',
+            }}
+          >
             {dataSource.map(
               ({ marketName, side, size, price, liquidity, feeCost }, i) => (
                 <Row

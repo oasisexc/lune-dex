@@ -36,6 +36,7 @@ export default function DepositDialog({ onClose, baseOrQuote }) {
       title={depositCoin}
       visible={!!coinMint}
       onOk={onClose}
+      cancelText={'취소'}
       onCancel={onClose}
     >
       <div style={{ paddingTop: '20px' }}>
