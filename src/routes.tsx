@@ -23,7 +23,7 @@ export function Routes() {
             <Route exact path="/market/:marketAddress">
               <TradePage />
             </Route>
-            <Route exact path="/orders" component={OpenOrdersPage} />
+            {/* <Route exact path="/orders" component={OpenOrdersPage} />
             <Route exact path="/balances" component={BalancesPage} />
             <Route exact path="/convert" component={ConvertPage} />
             <Route
@@ -39,7 +39,7 @@ export function Routes() {
             </Route>
             <Route exact path="/pools/:poolAddress">
               <PoolPage />
-            </Route>
+            </Route> */}
           </Switch>
         </BasicLayout>
       </HashRouter>
