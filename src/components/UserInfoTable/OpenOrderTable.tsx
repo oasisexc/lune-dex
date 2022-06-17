@@ -26,12 +26,14 @@ export default function OpenOrderTable({
   pageSize,
   loading,
   marketFilter,
+  smallScreen,
 }: {
   openOrders: OrderWithMarketAndMarketName[] | null | undefined;
   onCancelSuccess?: () => void;
   pageSize?: number;
   loading?: boolean;
   marketFilter?: boolean;
+  smallScreen: boolean;
 }) {
   let { wallet } = useWallet();
   let connection = useSendConnection();
@@ -86,7 +88,13 @@ export default function OpenOrderTable({
           <Col span={5}>가격</Col>
           <Col span={4}></Col>
         </Row>
-        <div style={{ height: 350, overflowX: 'hidden' }}>
+        <div
+          style={{
+            height: smallScreen ? 230 : 330,
+            overflowX: 'hidden',
+            overflowY: 'auto',
+          }}
+        >
           {dataSource.map(({ marketName, side, size, price, orderId }, i) => (
             <Row
               key={i}

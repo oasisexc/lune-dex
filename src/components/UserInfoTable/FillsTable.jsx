@@ -2,7 +2,7 @@ import React from 'react';
 import { Row, Col } from 'antd';
 import { useFills, useMarket } from '../../utils/markets';
 
-export default function FillsTable() {
+export default function FillsTable({ smallScreen }) {
   const fills = useFills();
 
   const { quoteCurrency } = useMarket();
@@ -34,7 +34,13 @@ export default function FillsTable() {
               {quoteCurrency ? `수수료 (${quoteCurrency})` : '수수료'}
             </Col>
           </Row>
-          <div style={{ height: 350, overflowX: 'hidden' }}>
+          <div
+            style={{
+              height: smallScreen ? 230 : 330,
+              overflowX: 'hidden',
+              overflowY: 'auto',
+            }}
+          >
             {dataSource.map(
               ({ marketName, side, size, price, liquidity, feeCost }, i) => (
                 <Row

@@ -141,8 +141,12 @@ export default function Index({ smallScreen }) {
             padding: 16,
           }}
         >
-          {activeKeyStr && activeKeyStr === 'orders' ? <OpenOrdersTab /> : null}
-          {activeKeyStr && activeKeyStr === 'fills' ? <FillsTable /> : null}
+          {activeKeyStr && activeKeyStr === 'orders' ? (
+            <OpenOrdersTab smallScreen={smallScreen} />
+          ) : null}
+          {activeKeyStr && activeKeyStr === 'fills' ? (
+            <FillsTable smallScreen={smallScreen} />
+          ) : null}
           {/* {activeKeyStr && activeKeyStr === 'balances' ? <BalancesTab /> : null} */}
           {/* {activeKeyStr && activeKeyStr === 'fees' ? (
                 <FeesTable market={{ marketAddress }} />
@@ -153,14 +157,14 @@ export default function Index({ smallScreen }) {
   );
 }
 
-const OpenOrdersTab = () => {
+const OpenOrdersTab = ({ smallScreen }) => {
   const openOrders = useOpenOrders();
 
-  return <OpenOrderTable openOrders={openOrders} />;
+  return <OpenOrderTable openOrders={openOrders} smallScreen={smallScreen} />;
 };
 
-const BalancesTab = () => {
+const BalancesTab = ({ smallScreen }) => {
   const balances = useBalances();
 
-  return <BalancesTable balances={balances} />;
+  return <BalancesTable balances={balances} smallScreen={smallScreen} />;
 };
