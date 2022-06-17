@@ -35,8 +35,7 @@ export function getRandomEndpoint() {
 export const ENDPOINTS: EndpointInfo[] = [
   {
     name: 'mainnet-beta',
-    endpoint: 'https://raydium.rpcpool.com',
-    // endpoint: getRandomEndpoint(),
+    endpoint: 'https://solana-api.projectserum.com',
     custom: false,
   },
   { name: 'localnet', endpoint: 'http://127.0.0.1:8899', custom: false },
